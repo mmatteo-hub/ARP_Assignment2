@@ -8,6 +8,7 @@
     #include <signal.h>
     #include <time.h> 
     #include <errno.h>
+    #include <math.h>
 
     #define BUFFSIZE 80
 
