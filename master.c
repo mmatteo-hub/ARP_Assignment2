@@ -48,11 +48,10 @@
         f = fopen("./../log/logfile.txt","w");
 
         // defining all the paramters list for the processes
-        char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/producerUpipe", (char*)NULL};
+        char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/unnamedPipe", (char*)NULL};
         char *arg_list_2[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/producerNpipe", (char*)NULL};
         char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/producerScoket", (char*)NULL};
         char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/producerSharedmemory", (char*)NULL};
-        char *arg_list_5[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/consumerUpipe", (char*)NULL};
         char *arg_list_6[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/consumerNpipe", (char*)NULL};
         char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/consumerScoket", (char*)NULL};
         char *arg_list_8[] = {"/usr/bin/konsole", "--hold", "-e", "./../exc/consumerSharedmemory", (char*)NULL};
