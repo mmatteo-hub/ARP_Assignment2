@@ -1,2 +1,0 @@
-konsole (PID = 79348) created at : Fri Dec 10 14:02:19 2021
-konsole (PID = 79349) created at : Fri Dec 10 14:02:19 2021
