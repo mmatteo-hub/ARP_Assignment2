@@ -45,7 +45,9 @@
         {
             // creating named pipe
             char * namedPipe = "/tmp/namedPipe";
+            char * timeCompute = "/tmp/timeCompute";
             mkfifo(namedPipe,0666);
+            mkfifo(timeCompute,0666);
 
             // opening the log file in writing mode to create if it does not exist
             f = fopen("./../log/logfile.txt","w");
@@ -57,7 +59,7 @@
             flag1 = 0;
             while(!flag1)
             {
-                printf("Enter number of MB to trasfer (maximum 100MB): ");
+                printf("Enter number of MB to trasfer (maximum 100MB)\nNOTE: on a Virtual Machine the program does not go with more than 7MB of array.\n\nInsert here the dimension: ");
                 fflush(stdout);
                 scanf("%d",&dimension);
                 if(dimension > 0 && dimension <= 100) flag1 = 1;
@@ -178,5 +180,8 @@
                     }
                 }
 
-            }        
+            }
+
+            unlink(namedPipe);
+            unlink(timeCompute);        
         }
