@@ -41,7 +41,7 @@
             int B[dim];
             
             // read from fd[0]
-            read(fd[0], &B, sizeof(B));
+            read(fd[0], B, sizeof(B));
             // taking the final time
             gettimeofday(&end,0);
         }
@@ -55,7 +55,7 @@
                 A[i] = rand()%1000;
             }
             // write on the fd[1]
-            write(fd[1], &A, sizeof(A));
+            write(fd[1], A, sizeof(A));
         }
 
         elapsed = (end.tv_sec - begin.tv_sec)*10000000 + (end.tv_usec - begin.tv_usec);
