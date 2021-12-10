@@ -43,6 +43,9 @@
         // main
         int main(int argc, char *argv[])
         {
+            // creating named pipe
+            char * namedPipe = "/tmp/namedPipe";
+            mkfifo(namedPipe,0666);
 
             // opening the log file in writing mode to create if it does not exist
             f = fopen("./../log/logfile.txt","w");
