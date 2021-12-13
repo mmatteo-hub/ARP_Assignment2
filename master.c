@@ -122,10 +122,10 @@
             // defining all the paramters list for the processes
             char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};
             char *arg_list_2[] = {"./../exe/producerNpipe", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
-            char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerScoket", strToPass, (char*)NULL};
+            char *arg_list_3[] = {"./../exe/producerSocket", "--hold", "-e", "./../exe/producerSocket", strToPass, "5000", (char*)NULL};
             char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSharedmemory", strToPass, (char*)NULL};
             char *arg_list_6[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerNpipe", strToPass, (char*)NULL};
-            char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerScoket", strToPass, (char*)NULL};
+            char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSocket", strToPass, "5000", "cheerios", (char*)NULL};
             char *arg_list_8[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSharedmemory", strToPass, (char*)NULL};
 
             char str[80];
@@ -172,7 +172,7 @@
 
                         // socket
                         case '3':
-                            pid3 = spawn("/usr/bin/konsole", arg_list_3);
+                            pid3 = spawn("./../exe/producerSocket", arg_list_3);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid3, ctime(&clk));
