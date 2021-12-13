@@ -17,6 +17,9 @@
         char * namedPipe = "/tmp/namedPipe";
         char * timeCompute = "/tmp/timeCompute";
 
+        printf("Inside consumer for Named Pipe\n\n");
+        fflush(stdout);
+
         // time variable to compute the duration of the execution
         struct timeval begin,end;
         begin.tv_sec = 0;

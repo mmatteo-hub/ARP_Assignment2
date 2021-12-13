@@ -75,7 +75,7 @@
 
             // defining all the paramters list for the processes
             char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};
-            char *arg_list_2[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
+            char *arg_list_2[] = {"./../exe/producerNpipe", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
             char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerScoket", strToPass, (char*)NULL};
             char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSharedmemory", strToPass, (char*)NULL};
             char *arg_list_6[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerNpipe", strToPass, (char*)NULL};
@@ -110,7 +110,7 @@
                         
                         // named pipe
                         case '2':
-                            pid2 = spawn("/usr/bin/konsole", arg_list_2);
+                            pid2 = spawn("./../exe/producerNpipe", arg_list_2);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid2, ctime(&clk));
