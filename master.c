@@ -20,11 +20,57 @@
         #define CHECK(X) ({int __val = (X); (__val == -1 ? ({fprintf(stderr,"ERROR (" __FILE__ ":%d) -- %s\n",__LINE__,strerror(errno)); exit(-1);-1;}) : __val); })
 
         // defining pids for 5 processes
-        int pid1, pid2, pid3, pid4, pid5, pid6, pid7, pid8;
+        int pid1, pid2, pid3, pid4, pid6, pid7, pid8;
 
         // defininf file pointer and a time variable to read the current date
         FILE *f;
         time_t clk;
+
+        // function to kill al processes and respective write on the log file all actions computed
+        void kill_processes()
+        {
+            CHECK(kill(pid1,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid1, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid2,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid2, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid3,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid3, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid4,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid4, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid6,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid6, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid7,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid7, ctime(&clk));
+            fflush(f);
+
+            CHECK(kill(pid8,SIGKILL));
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"Process (PID = %d) killed at : %s", pid8, ctime(&clk));
+            fflush(f);
+        }
 
         // function to start the execution of the processes, having a parameters list
         int spawn(const char * program, char ** arg_list) 
@@ -159,6 +205,7 @@
                         // quit
                         case '0':
                             // writing on the log file
+                            kill_processes();
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"Master process (PID = %d) finished at : %s", (int)getpid(), ctime(&clk));
