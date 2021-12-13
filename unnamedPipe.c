@@ -40,6 +40,9 @@
         // child process: consumer
         if(!pid)
         {
+            printf("Inside consumer for Unnamed Pipe\n\n");
+            fflush(stdout);
+
             int B[dim];
             
             // read from fd[0]
