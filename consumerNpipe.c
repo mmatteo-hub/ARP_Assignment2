@@ -19,6 +19,10 @@
 
         // time variable to compute the duration of the execution
         struct timeval begin,end;
+        begin.tv_sec = 0;
+        begin.tv_usec = 0;
+        end.tv_sec = 0;
+        end.tv_usec = 0;
         // variable to store the total duration of the process
         double elapsed;
         char el[10];
@@ -44,9 +48,12 @@
 
         gettimeofday(&end,0);
 
-        elapsed += (end.tv_sec - begin.tv_sec)*10000000 + (end.tv_usec - begin.tv_usec);
-        printf("Duration for transfering data by named pipe: %lf usec\n",elapsed);
-        fflush(stdout);
+        if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
+        {
+            elapsed += (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
+            printf("Duration for transfering data by named pipe: %lf usec\n",elapsed);
+            fflush(stdout);
+        }
 
         return 0;
     }

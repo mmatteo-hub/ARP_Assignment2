@@ -19,6 +19,10 @@
 
         // time variable to compute the duration of the execution
         struct timeval begin,end;
+        begin.tv_sec = 0;
+        begin.tv_usec = 0;
+        end.tv_sec = 0;
+        end.tv_usec = 0;
         // variable to store the total duration of the process
         double elapsed;
 
@@ -42,9 +46,13 @@
         gettimeofday(&end,0);
         
         char el[10];
-        elapsed = (end.tv_sec - begin.tv_sec)*10000000 + (end.tv_usec - begin.tv_usec);
-        sprintf(el,"%f",elapsed);
-        write(fdt,el,sizeof(el));
+
+        if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
+        {
+            elapsed = (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
+            sprintf(el,"%f",elapsed);
+            write(fdt,el,sizeof(el));
+        }
         close(fdt);
 
         return 0;

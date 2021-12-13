@@ -18,6 +18,10 @@
 
         // time variable to compute the duration of the execution
         struct timeval begin,end;
+        begin.tv_sec = 0;
+        begin.tv_usec = 0;
+        end.tv_sec = 0;
+        end.tv_usec = 0;
         // variable to store the total duration of the process
         double elapsed;
 
@@ -26,10 +30,10 @@
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
 
+        int flag = 0;
+
         // taking the initial time
         gettimeofday(&begin,0);
-
-        int flag = 0;
 
         // fork
         pid = fork();
@@ -52,13 +56,17 @@
                 // filling the array
                 A[i] = rand()%1000;
             }
+
             // write on the fd[1]
             write(fd[1], &A, sizeof(A));
         }
 
-        elapsed = (end.tv_sec - begin.tv_sec)*10000000 + (end.tv_usec - begin.tv_usec);
-        printf("Duration for transfering data by unnamed pipe: %lf usec\n",elapsed);
-        fflush(stdout);
+        if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
+        {
+            elapsed = (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
+            printf("Duration for transfering data by unnamed pipe: %lf usec\n",elapsed);
+            fflush(stdout);
+        }
 
         return 0;
     }
