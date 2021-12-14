@@ -118,6 +118,7 @@
             intToPass = dimension * 1048576 / 4;
             char strToPass[10];
             sprintf(strToPass, "%f", intToPass);
+            printf("String to pass = %s\n", strToPass);
 
             // defining all the paramters list for the processes
             char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};

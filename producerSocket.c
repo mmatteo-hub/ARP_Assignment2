@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
 {
     int listenfd = 0, connfd = 0;
     struct sockaddr_in serv_addr; 
-
-    char sendBuff[1025];
-    time_t ticks; 
+    int dim = atoi(argv[4])*4;
+	
+    char sendBuff[dim];
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -33,8 +33,12 @@ int main(int argc, char *argv[])
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-        ticks = time(NULL);
-        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+        for(int i=0; i<dim;i++)
+        {
+            // filling the array
+            sendBuff[i] = 'A' + (rand()%26);
+        }
+        printf("%s\n", sendBuff);
         write(connfd, sendBuff, strlen(sendBuff)); 
 
         close(connfd);
