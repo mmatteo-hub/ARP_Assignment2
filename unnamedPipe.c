@@ -43,7 +43,7 @@
             printf("Inside consumer for Unnamed Pipe\n\n");
             fflush(stdout);
 
-            int B[dim];
+            char B[dim];
             
             // read from fd[0]
             read(fd[0], &B, sizeof(B));
@@ -53,11 +53,11 @@
         // father process: producer
         else if(pid)
         {
-            int A[dim];
+            char A[dim];
             for(int i=0; i<dim;i++)
             {
                 // filling the array
-                A[i] = rand()%1000;
+                A[i] = 'A' + (rand()%26);
             }
 
             // write on the fd[1]

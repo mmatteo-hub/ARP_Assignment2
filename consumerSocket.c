@@ -12,7 +12,6 @@
 int main(int argc, char *argv[])
 {
     int sockfd = 0, n = 0;
-    char recvBuff[1024];
     struct sockaddr_in serv_addr; 
 
     if(argc != 3)
@@ -22,8 +21,9 @@ int main(int argc, char *argv[])
     } 
     
     int dim = atoi(argv[2]);
+    char B[dim];
 
-    memset(recvBuff, '0',sizeof(recvBuff));
+    memset(B, '0',sizeof(B));
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Error : Could not create socket \n");
@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
        return 1;
     } 
 
-    while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
+    while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
     {
-        recvBuff[n] = 0;
-        if(fputs(recvBuff, stdout) == EOF)
+        B[n] = 0;
+        if(fputs(B, stdout) == EOF)
         {
             printf("\n Error : Fputs error\n");
         }

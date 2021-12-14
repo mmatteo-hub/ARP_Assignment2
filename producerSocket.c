@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr; 
     int dim = atoi(argv[4])*4;
 	
-    char sendBuff[dim];
+    char A[dim];
 
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, '0', sizeof(serv_addr));
-    memset(sendBuff, '0', sizeof(sendBuff)); 
+    memset(A, '0', sizeof(A)); 
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
         for(int i=0; i<dim;i++)
         {
             // filling the array
-            sendBuff[i] = 'A' + (rand()%26);
+            A[i] = 'A' + (rand()%26);
         }
-        printf("%s\n", sendBuff);
-        write(connfd, sendBuff, strlen(sendBuff)); 
+        printf("%s\n", A);
+        write(connfd, A, strlen(A)); 
 
         close(connfd);
         sleep(1);

@@ -34,11 +34,11 @@
 
         gettimeofday(&begin,0);
 
-        int A[dim];
+        char A[dim];
         for(int i=0; i<dim;i++)
         {
             // filling the array
-            A[i] = rand()%1000;
+            A[i] = 'A' + (rand()%26);
         }
         write(fd, A, sizeof(A));
         close(fd);

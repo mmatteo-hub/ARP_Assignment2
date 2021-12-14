@@ -43,7 +43,7 @@
 
         gettimeofday(&begin,0);
 
-        int B[dim];
+        char B[dim];
 
         read(fd, B, sizeof(B));
 
