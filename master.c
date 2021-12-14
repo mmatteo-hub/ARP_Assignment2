@@ -122,10 +122,10 @@
             // defining all the paramters list for the processes
             char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};
             char *arg_list_2[] = {"./../exe/producerNpipe", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
-            char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerScoket", strToPass, (char*)NULL};
+            char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSocket", strToPass, (char*)NULL};
             char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSharedmemory", strToPass, (char*)NULL};
             char *arg_list_6[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerNpipe", strToPass, (char*)NULL};
-            char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerScoket", strToPass, (char*)NULL};
+            char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSocket", "127.0.0.1", strToPass, (char*)NULL};
             char *arg_list_8[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSharedmemory", strToPass, (char*)NULL};
 
             char str[80];
