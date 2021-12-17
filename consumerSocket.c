@@ -8,11 +8,23 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h> 
+#include <sys/time.h> 
+#include <time.h> 
 
 int main(int argc, char *argv[])
 {
     int sockfd = 0, n = 0;
-    struct sockaddr_in serv_addr; 
+    struct sockaddr_in serv_addr;
+
+    // time variable to compute the duration of the execution
+    struct timeval end;
+    end.tv_sec = 0;
+    end.tv_usec = 0;
+    // variable to store the total duration of the process
+    double elapsed;
+    double begin;
+
+    char buff[80];
 
     if(argc != 3)
     {
@@ -21,6 +33,8 @@ int main(int argc, char *argv[])
     } 
     
     int dim = atoi(argv[2]);
+    printf("%i\n", dim);
+    fflush(stdout);
     char B[dim];
 
     memset(B, '0',sizeof(B));
@@ -45,16 +59,26 @@ int main(int argc, char *argv[])
     {
        printf("\n Error : Connect Failed \n");
        return 1;
-    } 
+    }
 
-    while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
+    while(n = read(sockfd, B, sizeof(B)-1) > 0);
+
+    gettimeofday(&end,0);
+
+    while(n = read(sockfd, buff, sizeof(buff)-1) > 0);
+    begin = atof(buff);
+
+    printf("buff = %s\n",buff);
+    fflush(stdout);
+
+    /*while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
     {
         B[n] = 0;
         if(fputs(B, stdout) == EOF)
         {
             printf("\n Error : Fputs error\n");
         }
-    } 
+    }*/
 
     if(n < 0)
     {
