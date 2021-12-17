@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 {
     int sockfd = 0, n = 0;
     struct sockaddr_in serv_addr;
+    int sockfd2 = 0, n2 = 0;
+    struct sockaddr_in serv_addr2;
 
     // time variable to compute the duration of the execution
     struct timeval end;
@@ -64,11 +66,42 @@ int main(int argc, char *argv[])
     while(n = read(sockfd, B, sizeof(B)-1) > 0);
 
     gettimeofday(&end,0);
+    double time_final = end.tv_sec*1000000 + end.tv_usec;
+    
+    printf("I'm here\n");
+    
+    sleep(5);
+    
+    memset(buff, '0',sizeof(buff));
+    if((sockfd2 = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        printf("\n Error : Could not create socket \n");
+        return 1;
+    } 
 
-    while(n = read(sockfd, buff, sizeof(buff)-1) > 0);
+    memset(&serv_addr2, '0', sizeof(serv_addr2)); 
+
+    serv_addr2.sin_family = AF_INET;
+    serv_addr2.sin_port = htons(5002); 
+
+    if(inet_pton(AF_INET, argv[1], &serv_addr2.sin_addr)<=0)
+    {
+        printf("\n inet_pton error occured\n");
+        return 1;
+    } 
+
+    if( connect(sockfd2, (struct sockaddr *)&serv_addr2, sizeof(serv_addr2)) < 0)
+    {
+       printf("\n Error : Connect Failed \n");
+       return 1;
+    }
+
+    while(n2 = read(sockfd2, buff, sizeof(buff)-1) > 0);
     begin = atof(buff);
-
-    printf("buff = %s\n",buff);
+    
+    elapsed = time_final - begin;
+    
+    printf("Time socket = %f us\n", elapsed);
     fflush(stdout);
 
     /*while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
