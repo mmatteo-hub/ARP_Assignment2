@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr; 
     int listenfd2 = 0, connfd2 = 0;
     struct sockaddr_in serv_addr2; 
-    int dim = atoi(argv[4]);
+    int dim = atoi(argv[1]);
     printf("%i\n", dim);
     fflush(stdout);
 	
