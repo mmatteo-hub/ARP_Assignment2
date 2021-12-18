@@ -89,9 +89,11 @@
         // main
         int main(int argc, char *argv[])
         {
-            // creating named pipe
+            // initialising named pipe
             char * namedPipe = "/tmp/namedPipe";
             char * timeCompute = "/tmp/timeCompute";
+
+            // creating pipes
             mkfifo(namedPipe,0666);
             mkfifo(timeCompute,0666);
 
@@ -137,6 +139,7 @@
 
             while(1)
             {
+                // take input from the user
                 scanf("%s",str);
 
                 str[strcspn(str,"\n")] = 0;
@@ -148,6 +151,7 @@
                     {
                         // unnamed pipe
                         case '1':
+                            // producer and consumer
                             pid1 = spawn("./../exe/unnamedPipe", arg_list_1);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
@@ -158,12 +162,14 @@
                         
                         // named pipe
                         case '2':
+                            // producer
                             pid2 = spawn("./../exe/producerNpipe", arg_list_2);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid2, ctime(&clk));
                             fflush(f);
 
+                            // consumer
                             pid6 = spawn("./../exe/consumerNpipe", arg_list_6);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
@@ -174,12 +180,14 @@
 
                         // socket
                         case '3':
+                            // producer
                             pid3 = spawn("./../exe/producerSocket", arg_list_3);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid3, ctime(&clk));
                             fflush(f);
-
+                            
+                            // consumer
                             pid7= spawn("./../exe/consumerSocket", arg_list_7);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
@@ -190,12 +198,14 @@
 
                         // shared memory
                         case '4':
+                            // producer
                             pid4 = spawn("./../exe/producerSharedmemory", arg_list_4);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid4, ctime(&clk));
                             fflush(f);
 
+                            // consumer
                             pid8 = spawn("./../exe/consumerSharedmemory", arg_list_8);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
@@ -230,7 +240,7 @@
                 }
 
             }
-
+            // unlink named pipes
             unlink(namedPipe);
             unlink(timeCompute);        
         }

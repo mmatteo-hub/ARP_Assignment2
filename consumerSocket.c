@@ -13,6 +13,7 @@
 
 int main(int argc, char *argv[])
 {
+    // 
     int sockfd = 0, n = 0;
     struct sockaddr_in serv_addr;
     int sockfd2 = 0, n2 = 0;
@@ -26,15 +27,18 @@ int main(int argc, char *argv[])
     double elapsed;
     double begin;
 
+    // initialising a buffer
     char buff[80];
 
     if(argc != 3)
     {
         printf("\n Usage: %s <ip of server> \n",argv[0]);
         return 1;
-    } 
+    }
     
+    // dimension taken from master: already casted to length for the array of integers
     int dim = atoi(argv[2]);
+    // initialising an array for the consumer process
     char B[dim];
 
     memset(B, '0',sizeof(B));
@@ -63,7 +67,10 @@ int main(int argc, char *argv[])
 
     while(n = read(sockfd, B, sizeof(B)-1) > 0);
 
+    // getting the time
     gettimeofday(&end,0);
+
+    // converting the time into micro seconds and storing it into a variable
     double time_final = end.tv_sec*1000000 + end.tv_usec;
     
     sleep(5);
@@ -92,9 +99,12 @@ int main(int argc, char *argv[])
        return 1;
     }
 
+    // redaing from the socket
     while(n2 = read(sockfd2, buff, sizeof(buff)-1) > 0);
+    // converting the time into a float number
     begin = atof(buff);
     
+    // computing the total time
     elapsed = time_final - begin;
     
     printf("Time socket = %f us\n", elapsed);
