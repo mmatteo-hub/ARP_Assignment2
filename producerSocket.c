@@ -17,8 +17,6 @@ int main(int argc, char *argv[])
     int listenfd2 = 0, connfd2 = 0;
     struct sockaddr_in serv_addr2; 
     int dim = atoi(argv[1]);
-    printf("%i\n", dim);
-    fflush(stdout);
 	
     char A[dim];
 

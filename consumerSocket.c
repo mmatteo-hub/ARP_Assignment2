@@ -35,8 +35,6 @@ int main(int argc, char *argv[])
     } 
     
     int dim = atoi(argv[2]);
-    printf("%i\n", dim);
-    fflush(stdout);
     char B[dim];
 
     memset(B, '0',sizeof(B));
@@ -67,8 +65,6 @@ int main(int argc, char *argv[])
 
     gettimeofday(&end,0);
     double time_final = end.tv_sec*1000000 + end.tv_usec;
-    
-    printf("I'm here\n");
     
     sleep(5);
     
