@@ -7,8 +7,8 @@ gcc producerNpipe.c -o exe/producerNpipe
 gcc consumerNpipe.c -o exe/consumerNpipe
 gcc producerSocket.c -o exe/producerSocket
 gcc consumerSocket.c -o exe/consumerSocket
-gcc producerSharedmemory.c -o exe/producerSharedmemory
-gcc consumerSharedmemory.c -o exe/consumerSharedmemory
+gcc producerSharedmemory.c -o exe/producerSharedmemory -lrt -pthread
+gcc consumerSharedmemory.c -o exe/consumerSharedmemory -lrt -pthread
 
 cd -- "$(find . -iname exe -type d)"
 

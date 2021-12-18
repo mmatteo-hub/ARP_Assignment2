@@ -31,10 +31,6 @@
 
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
-        printf("%d\n", dim);
-        fflush(stdout);
-
-        gettimeofday(&begin,0);
 
         char A[dim];
         for(int i=0; i<dim;i++)
@@ -42,6 +38,7 @@
             // filling the array
             A[i] = 'A' + (rand()%26);
         }
+        gettimeofday(&begin,0);
         write(fd, A, sizeof(A));
         close(fd);
         
