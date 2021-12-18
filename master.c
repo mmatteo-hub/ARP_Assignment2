@@ -121,22 +121,22 @@
             printf("String to pass = %s\n", strToPass);
 
             // defining all the paramters list for the processes
-            char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};
-            char *arg_list_2[] = {"./../exe/producerNpipe", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
+            char *arg_list_1[] = {"./../exe/unnamedPipe", strToPass, (char*)NULL};
+            char *arg_list_2[] = {"./../exe/producerNpipe", strToPass, (char*)NULL};
 
-            char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSocket", strToPass, (char*)NULL};
-            char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSharedmemory", strToPass, (char*)NULL};
-            char *arg_list_6[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerNpipe", strToPass, (char*)NULL};
-            char *arg_list_7[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSocket", "127.0.0.1", strToPass, (char*)NULL};
-            char *arg_list_8[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/consumerSharedmemory", strToPass, (char*)NULL};
+            char *arg_list_3[] = {"./../exe/producerSocket", strToPass, (char*)NULL};
+            char *arg_list_4[] = {"./../exe/producerSharedmemory", strToPass, (char*)NULL};
+            char *arg_list_6[] = {"./../exe/consumerNpipe", strToPass, (char*)NULL};
+            char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, (char*)NULL};
+            char *arg_list_8[] = {"./../exe/consumerSharedmemory", strToPass, (char*)NULL};
 
             char str[80];
+            
+            printf("Type:\n1 to transfer data via UNNAMED PIPE\n2 to transfer data via NAMED PIPE\n3 to transfer data via SOCKET\n4 to transfer data via SHARED MEMORY\n0 to QUIT\n");
+                fflush(stdout);
 
             while(1)
             {
-                printf("Type:\n1 to transfer data via UNNAMED PIPE\n2 to transfer data via NAMED PIPE\n3 to transfer data via SOCKET\n4 to transfer data via SHARED MEMORY\n0 to QUIT\n");
-                fflush(stdout);
-
                 scanf("%s",str);
 
                 str[strcspn(str,"\n")] = 0;
@@ -148,7 +148,7 @@
                     {
                         // unnamed pipe
                         case '1':
-                            pid1 = spawn("/usr/bin/konsole", arg_list_1);
+                            pid1 = spawn("./../exe/unnamedPipe", arg_list_1);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid1, ctime(&clk));
@@ -164,7 +164,7 @@
                             fprintf(f,"konsole (PID = %d) created at : %s", pid2, ctime(&clk));
                             fflush(f);
 
-                            pid6 = spawn("/usr/bin/konsole", arg_list_6);
+                            pid6 = spawn("./../exe/consumerNpipe", arg_list_6);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid6, ctime(&clk));
@@ -180,7 +180,7 @@
                             fprintf(f,"konsole (PID = %d) created at : %s", pid3, ctime(&clk));
                             fflush(f);
 
-                            pid7= spawn("/usr/bin/konsole", arg_list_7);
+                            pid7= spawn("./../exe/consumerSocket", arg_list_7);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid7, ctime(&clk));
@@ -190,13 +190,13 @@
 
                         // shared memory
                         case '4':
-                            pid4 = spawn("/usr/bin/konsole", arg_list_4);
+                            pid4 = spawn("./../exe/producerSharedmemory", arg_list_4);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid4, ctime(&clk));
                             fflush(f);
 
-                            pid8 = spawn("/usr/bin/konsole", arg_list_8);
+                            pid8 = spawn("./../exe/consumerSharedmemory", arg_list_8);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
                             fprintf(f,"konsole (PID = %d) created at : %s", pid8, ctime(&clk));

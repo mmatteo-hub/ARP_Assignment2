@@ -31,6 +31,8 @@
 
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
+        printf("%d\n", dim);
+        fflush(stdout);
 
         gettimeofday(&begin,0);
 
