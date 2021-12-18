@@ -33,13 +33,10 @@
         int fd = open(namedPipe,O_RDONLY);
         int fdt = open(timeCompute,O_RDONLY);
 
-        read(fdt, &el, sizeof(el));
-        sscanf(el,"%lf",&elapsed);
-
-        close(fdt);
-
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
+        printf("%d\n", dim);
+        fflush(stdout);
 
         gettimeofday(&begin,0);
 
@@ -50,6 +47,11 @@
         close(fd);
 
         gettimeofday(&end,0);
+        
+        read(fdt, &el, sizeof(el));
+        sscanf(el,"%lf",&elapsed);
+
+        close(fdt);
 
         if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
         {

@@ -122,7 +122,7 @@
 
             // defining all the paramters list for the processes
             char *arg_list_1[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/unnamedPipe", strToPass, (char*)NULL};
-            char *arg_list_2[] = {"./../exe/producerNpipe", "--hold", "-e", "./../exe/producerNpipe", strToPass, (char*)NULL};
+            char *arg_list_2[] = {"./../exe/producerNpipe", strToPass, (char*)NULL};
 
             char *arg_list_3[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSocket", strToPass, (char*)NULL};
             char *arg_list_4[] = {"/usr/bin/konsole", "--hold", "-e", "./../exe/producerSharedmemory", strToPass, (char*)NULL};
