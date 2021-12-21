@@ -1,10 +1,3 @@
-# unzip src.zip file into the path inserted
-unzip -q -d $1/ src.zip
-
-# create 2 folder to organise the files
-mkdir -p $1/exe
-mkdir -p $1/log
-
 # compile .c files, from src folder, and put them into exc folder created
 gcc $1/src/master/master.c -o $1/exe/master
 gcc $1/src/namedPipe/producerNpipe.c -o $1/exe/producerNpipe
@@ -17,3 +10,8 @@ gcc $1/src/unnamedPipe/unnamedPipe.c -o $1/exe/unnamedPipe
 
 # printing on the shell
 echo installation succeded
+
+cd -- "$(find . -iname exe -type d)"
+
+# runf the master process
+./master

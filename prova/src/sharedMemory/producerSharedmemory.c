@@ -17,31 +17,26 @@ int i, j;
 int main(int argc, char *argv[]) {
 
   int dim = atoi(argv[1]);
-  printf("0.0");
   char A[dim];
   for(int i=0; i<dim;i++)
   {
     // filling the array
     A[i] = 'A' + (rand()%26);
   }
-  printf("0.1");
   int shared_seg_size = (sizeof(A));
   int shmfd = shm_open(SHMOBJ_PATH, O_CREAT | O_RDWR, 0666);
   ftruncate(shmfd, shared_seg_size);
   ptr = mmap(NULL, shared_seg_size, PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
-  printf("0.2");
   sem_t * sem_id1= sem_open(SEM_PATH_1, O_CREAT | O_RDWR, 0666, 1);
   sem_t * sem_id2= sem_open(SEM_PATH_2, O_CREAT | O_RDWR, 0666, 1);
   sem_init(sem_id1, 1, 1); // initialized to 1
   sem_init(sem_id2, 1, 0); // initialized to 0
 
-  printf("0.3");
   // put string into shmem
   for (i = 0; i < strlen(A); ++i) {
     *ptr = A[i];
     ptr++;
   }
-  printf("1.1");
 
   // repeat 3 times
   for(j=0;j<3;j++) {
