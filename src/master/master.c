@@ -205,6 +205,7 @@
                             fprintf(f,"konsole (PID = %d) created at : %s", pid4, ctime(&clk));
                             fflush(f);
 
+				sleep(1);
                             // consumer
                             pid8 = spawn("./../exe/consumerSharedmemory", arg_list_8);
                             fseek(f,0,SEEK_END);
