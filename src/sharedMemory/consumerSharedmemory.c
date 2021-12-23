@@ -29,10 +29,13 @@ int main(int argc, char *argv[]) {
   for(j=0;j<3;j++) {
     // wait prod
     sem_wait(sem_id2);
+    printf("1");
     /* get shared data */
     printf("%s\n", ptr);
-    printf("enter anything to proceed "); fflush(stdin);
-    scanf("%s", dum);
+    B = 
+    //fflush(stdin);
+    scanf("%s", B);
+    printf("2");
     // start prod
     sem_post(sem_id1);
   }

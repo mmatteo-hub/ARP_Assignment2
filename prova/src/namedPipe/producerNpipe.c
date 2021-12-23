@@ -26,48 +26,47 @@
         end.tv_usec = 0;
         // variable to store the total duration of the process, once converted
         double elapsed;
-        // initialising the array for storing the time duration
-        char el[10];
 
         // opening the pipe
-        int fd = open(namedPipe,O_RDONLY);
-        int fdt = open(timeCompute,O_RDONLY);
+        int fd = open(namedPipe,O_WRONLY);
+        int fdt = open(timeCompute,O_WRONLY);
 
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
 
+        // initialising the array for the producer process
+        char A[dim];
+        for(int i=0; i<dim;i++)
+        {
+            // filling the array randomly
+            A[i] = 'A' + (rand()%26);
+        }
         // getting the time
         gettimeofday(&begin,0);
 
-        // intialising the array for the consumer process
-        char B[dim];
-
-        // reading from the pipe
-        read(fd, B, sizeof(B));
-
+        // writing on the pipe
+        write(fd, A, sizeof(A));
         // closing the pipe
         close(fd);
-
+        
         // getting the time
         gettimeofday(&end,0);
         
-        // reading from the pipe
-        read(fdt, &el, sizeof(el));
-        // doing a scanf to store the value read into the array according to a specific format string
-        sscanf(el,"%lf",&elapsed);
+        // initialising the array to pass the time duration
+        char el[10];
 
-        // closing the pipe
-        close(fdt);
-
-        // checking that both begin and end time are non zero values
+        // checking botj begin and end time are non zero values
         if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
         {
-            // converting the time into micro seconds and storing in into a variable
-            elapsed += (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
-            
-            printf("Duration for transfering data by named pipe: %lf usec\n",elapsed);
-            fflush(stdout);
+            // converting the time into micro seconds and storing it into the variable
+            elapsed = (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
+            // printing on the array with a specific forma type
+            sprintf(el,"%f",elapsed);
+            // writing on the pipe
+            write(fdt,el,sizeof(el));
         }
+        // closing the pipe
+        close(fdt);
 
         return 0;
     }
