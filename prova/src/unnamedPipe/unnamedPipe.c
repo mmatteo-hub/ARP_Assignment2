@@ -59,7 +59,7 @@
             for(int i=0; i<y;i++)
             {
 		    // read from fd[0]
-		    read(fd[0], &B[i+x], sizeof(char)*x);
+		    read(fd[0], &B[i*x], sizeof(char)*x);
 	    }
 	    
 	    close(fd[0]);
