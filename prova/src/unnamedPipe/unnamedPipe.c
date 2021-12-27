@@ -1,7 +1,8 @@
     #include <stdio.h> 
     #include <string.h> 
     #include <fcntl.h> 
-    #include <sys/stat.h> 
+    #include <sys/stat.h>
+    #include <sys/wait.h> 
     #include <sys/types.h> 
     #include <unistd.h> 
     #include <stdlib.h>
@@ -9,6 +10,7 @@
     #include <time.h> 
     #include <errno.h>
     #include <math.h>
+    #include <malloc.h>
     #include <sys/time.h>
 
     int main(int argc, char * argv[])
@@ -28,13 +30,14 @@
 
         // file descriptor for pipe
         int fd[2];
+        if(pipe(fd)<0)
+        	perror("Not created pipe");
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
+	int mega = 1024 * 1024;
+	int number = dim * mega;
 
-        int flag = 0;
-
-        // taking the initial time
-        gettimeofday(&begin,0);
+        
 
         // fork
         pid = fork();
@@ -43,29 +46,48 @@
         {
             printf("Inside consumer for Unnamed Pipe\n\n");
             fflush(stdout);
-
+	    close(fd[1]);
             // initialising the array for the consumer process
-            char B[dim];
+            char* B;
+            B = (char *) malloc(sizeof(char)*number);
+            if(B == NULL)
+            	perror("Run out of memory\n");
             
-            // read from fd[0]
-            read(fd[0], &B, sizeof(B));
-
-            // taking the final time
-            gettimeofday(&end,0);
+            for(int i=0; i<number;i++)
+            {
+		    // read from fd[0]
+		    read(fd[0], &B[i], sizeof(char));
+	    }
+	    close(fd[0]);
+	    exit(0);
+            
         }
         // father process: producer
         else if(pid)
         {
             // initialising the array for the producer process
-            char A[dim];
-            for(int i=0; i<dim;i++)
+            char* A;
+            close(fd[0]);
+            A = (char *) malloc(sizeof(char)*number);
+            if(A == NULL)
+            	perror("Run out of memory\n");
+            for(int i=0; i<number;i++)
             {
                 // filling the array randomly
                 A[i] = 'A' + (rand()%26);
             }
-
-            // write on the fd[1]
-            write(fd[1], &A, sizeof(A));
+	    // taking the initial time
+            gettimeofday(&begin,0);
+  	    for(int i=0; i<number;i++)
+            {
+		    // write on the fd[1]
+		    write(fd[1], &A[i], sizeof(char));
+	    }
+	    close(fd[1]);
+	    wait(NULL);
+	    // taking the final time
+            gettimeofday(&end,0);
+	    
         }
 
         // checking that both begin and end time are non zero values
@@ -77,6 +99,8 @@
             printf("Duration for transfering data by unnamed pipe: %lf usec\n",elapsed);
             fflush(stdout);
         }
+        //free(A);
+        //free(B);
 
         return 0;
     }
