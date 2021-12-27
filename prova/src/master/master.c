@@ -91,11 +91,9 @@
         {
             // initialising named pipe
             char * namedPipe = "/tmp/namedPipe";
-            char * timeCompute = "/tmp/timeCompute";
-
+           
             // creating pipes
             mkfifo(namedPipe,0666);
-            mkfifo(timeCompute,0666);
 
             // opening the log file in writing mode to create if it does not exist
             f = fopen("./../log/logfile.txt","w");
@@ -128,7 +126,7 @@
 
             char *arg_list_3[] = {"./../exe/producerSocket", strToPass, (char*)NULL};
             char *arg_list_4[] = {"./../exe/producerSharedmemory", strToPass, (char*)NULL};
-            char *arg_list_6[] = {"./../exe/consumerNpipe", strToPass, (char*)NULL};
+            
             char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, (char*)NULL};
             char *arg_list_8[] = {"./../exe/consumerSharedmemory", strToPass, (char*)NULL};
 
@@ -170,6 +168,9 @@
                             fflush(f);
 
                             // consumer
+                            char prod_pid[10];
+                            sprintf(prod_pid, "%d", pid2);
+                            char *arg_list_6[] = {"./../exe/consumerNpipe", strToPass, prod_pid, (char*)NULL};
                             pid6 = spawn("./../exe/consumerNpipe", arg_list_6);
                             fseek(f,0,SEEK_END);
                             clk = time(NULL);
@@ -243,5 +244,5 @@
             }
             // unlink named pipes
             unlink(namedPipe);
-            unlink(timeCompute);        
+                    
         }

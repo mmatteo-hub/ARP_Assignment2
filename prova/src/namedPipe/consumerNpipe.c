@@ -15,62 +15,40 @@
     {
         // initialising named pipe already created into the master process
         char * namedPipe = "/tmp/namedPipe";
-        char * timeCompute = "/tmp/timeCompute";
 
         printf("Inside consumer for Named Pipe\n\n");
         fflush(stdout);
 
-        // time variable to compute the duration of the execution
-        struct timeval begin,end;
-        // initialising the variable for the time to the zero in order to avoid having rubbish data
-        begin.tv_sec = 0;
-        begin.tv_usec = 0;
-        end.tv_sec = 0;
-        end.tv_usec = 0;
-        // variable to store the total duration of the process, once converted
-        double elapsed;
-        // initialising the array for storing the time duration
-        char el[10];
-
         // opening the pipe
         int fd = open(namedPipe,O_RDONLY);
-        int fdt = open(timeCompute,O_RDONLY);
 
         // dimension taken from master: already casted to length for the array of integers
         int dim = atoi(argv[1]);
-
-        // getting the time
-        gettimeofday(&begin,0);
+        int mega = 1024 * 1024;
+	int number = dim * mega;
+	int x = 1024;
+	int y = dim*1024;
+	number = y*x;
+	pid_t pid_prod = atoi(argv[2]);
 
         // intialising the array for the consumer process
-        char B[dim];
-
+        char* B;
+            B = (char *) malloc(sizeof(char)*number);
+            if(B == NULL)
+            	perror("Run out of memory\n");
+        // send signal
+        kill(pid_prod, SIGUSR2);
         // reading from the pipe
-        read(fd, B, sizeof(B));
+        for(int i=0; i<y;i++)
+            {
+		    // read from fd[0]
+		    read(fd, &B[i*x], sizeof(char)*x);
+	    }
 
+        // send signal
+        kill(pid_prod, SIGUSR1);
         // closing the pipe
         close(fd);
-
-        // getting the time
-        gettimeofday(&end,0);
-        
-        // reading from the pipe
-        read(fdt, &el, sizeof(el));
-        // doing a scanf to store the value read into the array according to a specific format string
-        sscanf(el,"%lf",&elapsed);
-
-        // closing the pipe
-        close(fdt);
-
-        // checking that both begin and end time are non zero values
-        if((begin.tv_sec != 0 || begin.tv_usec != 0) && (end.tv_sec != 0 || end.tv_usec != 0))
-        {
-            // converting the time into micro seconds and storing in into a variable
-            elapsed += (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
-            
-            printf("Duration for transfering data by named pipe: %lf usec\n",elapsed);
-            fflush(stdout);
-        }
-
+       
         return 0;
     }
