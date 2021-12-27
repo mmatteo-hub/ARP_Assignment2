@@ -35,13 +35,7 @@ void consumer_ready(int sig_number)
 }
 
 int main(int argc, char * argv[])
-{
-    // initialising the variable for the time to the zero in order to avoid having rubbish data
-    begin.tv_sec = 0;
-    begin.tv_nsec = 0;
-    end.tv_sec = 0;
-    end.tv_nsec = 0;
-    
+{   
     // initialising named pipe already created into the master process
     char * namedPipe = "/tmp/namedPipe";
 
