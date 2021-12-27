@@ -1,5 +1,2 @@
-konsole (PID = 4531) created at : Mon Dec 27 15:15:31 2021
-konsole (PID = 4539) created at : Mon Dec 27 15:15:34 2021
-konsole (PID = 4540) created at : Mon Dec 27 15:15:34 2021
-konsole (PID = 4550) created at : Mon Dec 27 15:15:37 2021
-konsole (PID = 4551) created at : Mon Dec 27 15:15:37 2021
+konsole (PID = 34263) created at : Mon Dec 27 17:02:00 2021
+Process (PID = 34263) killed at : Mon Dec 27 17:02:22 2021
