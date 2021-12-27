@@ -1,2 +1,1 @@
-konsole (PID = 6110) created at : Mon Dec 27 11:02:40 2021
-Process (PID = 6110) killed at : Mon Dec 27 11:03:27 2021
+konsole (PID = 50416) created at : Mon Dec 27 12:38:54 2021
