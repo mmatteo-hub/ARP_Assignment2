@@ -16,8 +16,6 @@ int main(int argc, char *argv[])
     // 
     int sockfd = 0, n = 0;
     struct sockaddr_in serv_addr;
-    int sockfd2 = 0, n2 = 0;
-    struct sockaddr_in serv_addr2;
 
     // time variable to compute the duration of the execution
     struct timeval end;
