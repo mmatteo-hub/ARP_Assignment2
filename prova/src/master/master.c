@@ -117,7 +117,7 @@
                     fflush(stdout);
                 }
             }
-            intToPass = dimension * 1048576;
+            intToPass = dimension;
             char strToPass[10];
             sprintf(strToPass, "%f", intToPass);
             printf("String to pass = %s\n", strToPass);
