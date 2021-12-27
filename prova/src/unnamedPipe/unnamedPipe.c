@@ -36,6 +36,9 @@
         int dim = atoi(argv[1]);
 	int mega = 1024 * 1024;
 	int number = dim * mega;
+	int x = 1024;
+	int y = dim*1024;
+	number = y*x;
 
         
 
@@ -44,7 +47,7 @@
         // child process: consumer
         if(!pid)
         {
-            printf("Inside consumer for Unnamed Pipe\n\n");
+            printf("Unnamed Pipe started\n");
             fflush(stdout);
 	    close(fd[1]);
             // initialising the array for the consumer process
@@ -53,11 +56,12 @@
             if(B == NULL)
             	perror("Run out of memory\n");
             
-            for(int i=0; i<number;i++)
+            for(int i=0; i<y;i++)
             {
 		    // read from fd[0]
-		    read(fd[0], &B[i], sizeof(char));
+		    read(fd[0], &B[i+x], sizeof(char)*x);
 	    }
+	    
 	    close(fd[0]);
 	    exit(0);
             
@@ -76,12 +80,13 @@
                 // filling the array randomly
                 A[i] = 'A' + (rand()%26);
             }
+            
 	    // taking the initial time
             gettimeofday(&begin,0);
-  	    for(int i=0; i<number;i++)
+  	    for(int i=0; i<y;i++)
             {
 		    // write on the fd[1]
-		    write(fd[1], &A[i], sizeof(char));
+		    write(fd[1], &A[i+x], sizeof(char)*x);
 	    }
 	    close(fd[1]);
 	    wait(NULL);
@@ -96,7 +101,7 @@
             // converting the time into micro seconds and storing it into the variable
             elapsed = (end.tv_sec - begin.tv_sec)*1000000 + (end.tv_usec - begin.tv_usec);
 
-            printf("Duration for transfering data by unnamed pipe: %lf usec\n",elapsed);
+            printf("Duration for transfering %d Mb by unnamed pipe: %lf usec\n", dim, elapsed);
             fflush(stdout);
         }
         //free(A);
