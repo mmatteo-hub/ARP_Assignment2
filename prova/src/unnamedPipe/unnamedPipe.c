@@ -57,6 +57,7 @@
                 read(fd[0], &B[i], sizeof(char));
             }
             close(fd[0]);
+            free(B);
 	        exit(0);
         }
 
@@ -82,6 +83,7 @@
                 write(fd[1], &A[i], sizeof(char));
 	        }
 	        close(fd[1]);
+            free(A);
 	        wait(NULL);
 	        // taking the final time
             clock_gettime(CLOCK_REALTIME,&end);
@@ -97,8 +99,6 @@
             printf("Duration for transfering data by unnamed pipe: %lf msec\n",elapsed/1000000);
             fflush(stdout);
         }
-        //free(A);
-        //free(B);
 
         return 0;
     }
