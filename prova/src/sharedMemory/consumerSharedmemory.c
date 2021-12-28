@@ -24,8 +24,8 @@
 
 int main(int argc, char *argv[])
 {
-	int dim = atoi(argv[1]);
-    int dim_buff = dim*X;
+    int dim = atoi(argv[1]);
+    int dim_buff = dim*4*X;
     int number = dim*MEGA;
     char* B;
     B = (char *) malloc(sizeof(char)*number);

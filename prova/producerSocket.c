@@ -1,16 +1,12 @@
 /* A simple server in the internet domain using TCP
    The port number is passed as an argument */
 #include <stdio.h>
-#include <string.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <strings.h>
 #include <unistd.h>
-#include <time.h>
-
-
 
 // colours
 #define KNRM  "\x1B[0m"
@@ -84,25 +80,22 @@ int main(int argc, char *argv[])
      bzero(buffer,256);
      n = read(newsockfd,buffer,255);
      if (n < 0) error("ERROR reading from socket");
-     printf("%s\n", buffer);
      // getting the time
         clock_gettime(CLOCK_REALTIME,&begin);
      // writing on the socket
         for(int i=0; i<y;i++)
         {
             // write on the fd[1]
-            n = write(newsockfd, &A[i*X], sizeof(char)*X);
+            n = write(connfd, &A[i*X], sizeof(char)*X);
         }
      if (n < 0) error("ERROR writing to socket");
      bzero(buffer,256);
      n = read(newsockfd,buffer,255);
-     printf("%s\n", buffer);
      if (n < 0) error("ERROR reading from socket");
      // getting the time
         clock_gettime(CLOCK_REALTIME,&end);
         elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
         printf("\n%sTransfered %d MB(s) by SOCKET, time needed =  %lf ms%s\n\n", KYEL, dim, elapsed/1000000, KNRM);
         fflush(stdout);
-        close(newsockfd);
      return 0; 
 }

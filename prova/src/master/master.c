@@ -101,6 +101,9 @@ int main(int argc, char *argv[])
 {
     // initialising named pipe
     char * namedPipe = "/tmp/namedPipe";
+    
+    char portstr[5];
+    int port;
 
     // creating pipes
     mkfifo(namedPipe,0666);
@@ -133,7 +136,7 @@ int main(int argc, char *argv[])
     char *arg_list_1[] = {"./../exe/unnamedPipe", strToPass, (char*)NULL};
     char *arg_list_2[] = {"./../exe/producerNpipe", strToPass, (char*)NULL};
 
-    char *arg_list_3[] = {"./../exe/producerSocket", strToPass, (char*)NULL};
+    
     char *arg_list_4[] = {"./../exe/producerSharedmemory", strToPass, (char*)NULL};
 
     
@@ -192,7 +195,11 @@ int main(int argc, char *argv[])
 
                 // socket
                 case '3':
+                    
                     // producer
+                    port = 5000 + (rand()%100);
+                    sprintf(portstr, "%d", port);
+                    char *arg_list_3[] = {"./../exe/producerSocket", strToPass, portstr, (char*)NULL};
                     pid3 = spawn("./../exe/producerSocket", arg_list_3);
                     fseek(f,0,SEEK_END);
                     clk = time(NULL);
@@ -204,7 +211,7 @@ int main(int argc, char *argv[])
                     // consumer
                     char prod_pid3[10];
                     sprintf(prod_pid3, "%d", pid3);
-                    char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, prod_pid3, (char*)NULL};
+                    char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, portstr, (char*)NULL};
                     pid7= spawn("./../exe/consumerSocket", arg_list_7);
                     fseek(f,0,SEEK_END);
                     clk = time(NULL);
