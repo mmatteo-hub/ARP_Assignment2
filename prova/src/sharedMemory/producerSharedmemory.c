@@ -22,7 +22,8 @@ int i, j;
 int main(int argc, char *argv[])
 {
 	int dim = atoi(argv[1]);
-	int dim_buff = dim*X;
+	// dimension incread by a factor 4 to be compared
+	int dim_buff = dim*4*X;
 	int number = dim*MEGA;
   
   	char* A;

@@ -72,6 +72,9 @@ int main(int argc, char *argv[])
         // filling the array randomly
         A[i] = 'A' + (rand()%26);
     }
+
+    printf("Last 20 vals of A = %s\nDim(A)=%ld\n",&A[number-20],strlen(A));
+    fflush(stdout);
     
     // defininf the sockwt
     listenfd = socket(AF_INET, SOCK_STREAM, 0);

@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
         read(sockfd, &B[i*X], sizeof(char)*X);
     }
 
+    printf("Last 20 vals of B = %s\nDim(B)=%ld\n",&B[number-20],strlen(B));
+    fflush(stdout);
+
     close(sockfd);
     
     // send signal
