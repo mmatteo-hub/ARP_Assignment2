@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
                     fprintf(f,"konsole (PID = %d) created at : %s", pid3, ctime(&clk));
                     fflush(f);
                     
-                    sleep(1);
+                    sleep(5);
                     
                     // consumer
                     char prod_pid3[10];
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
                     fprintf(f,"konsole (PID = %d) created at : %s", pid4, ctime(&clk));
                     fflush(f);
 
-                    sleep(1);
+                    sleep(2);
                     // consumer
                     pid8 = spawn("./../exe/consumerSharedmemory", arg_list_8);
                     fseek(f,0,SEEK_END);

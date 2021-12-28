@@ -11,6 +11,10 @@
 #include <time.h> 
 #include <sys/time.h> 
 
+// colours
+#define KNRM  "\x1B[0m"
+#define KYEL  "\x1B[33m"
+
 #define MEGA 1048576
 #define X 1024
 
@@ -68,17 +72,11 @@ int main(int argc, char *argv[])
         // filling the array randomly
         A[i] = 'A' + (rand()%26);
     }
-
-    printf("Array created\n");
-    fflush(stdout);
     
     // defininf the sockwt
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, '0', sizeof(serv_addr));
     memset(A, '0', sizeof(A)); 
-    
-    printf("Memset ok\n");
-    fflush(stdout);
     
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -87,39 +85,31 @@ int main(int argc, char *argv[])
     bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)); 
 
     listen(listenfd, 10); 
-
-    printf("Listening\n");
-    fflush(stdout);
     while(1)
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
-	printf("Connected\n");
-	fflush(stdout);
-	while(!ready);
+        while(!ready);
+
         // getting the time
         clock_gettime(CLOCK_REALTIME,&begin);
-        printf("Started\n");
-	fflush(stdout);
 
         // writing on the socket
         for(int i=0; i<y;i++)
-	{
-		// write on the fd[1]
-        	write(connfd, &A[i*X], sizeof(char)*X);
+        {
+            // write on the fd[1]
+            write(connfd, &A[i*X], sizeof(char)*X);
         }
         // closing the socket
         close(connfd);
         
-        printf("Sent\n");
-	fflush(stdout);
-	
         while(end.tv_sec == 0 && end.tv_nsec == 0);
-    
+
         elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
-        printf("Duration for transfering %d MB by named pipe: %lf ms\n", dim, elapsed/1000000);
-    	fflush(stdout);
+        printf("\n%sTransfered %d MB(s) by SOCKET, time needed =  %lf ms%s\n\n", KYEL, dim, elapsed/1000000, KNRM);
+        fflush(stdout);
+
+        return 0;
     }
-     
 }
 

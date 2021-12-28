@@ -34,17 +34,12 @@ int main(int argc, char *argv[])
     int y = dim*X;
     // get pid producer process
     pid_t pid_prod = atoi(argv[3]);
-    
-    printf("Get param\n");
-    fflush(stdout);
 
     // intialising the array for the consumer process
     char* B;
     B = (char *) malloc(sizeof(char)*number);
     if(B == NULL)
         perror("Run out of memory\n");
-    printf("Created B\n");
-    fflush(stdout);
        
     // send signal
     kill(pid_prod, SIGUSR2);
@@ -68,27 +63,23 @@ int main(int argc, char *argv[])
         return 1;
     } 
 
-    printf("Connecting\n");
-    fflush(stdout);
     if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
        printf("\n Error : Connect Failed \n");
+       kill(pid_prod, SIGKILL);
        return 1;
     }
     
     // send signal
     kill(pid_prod, SIGUSR2);
-    printf("Reading\n");
-    fflush(stdout);
     
-    int p = 1;
     for(int i=0; i<y;i++)
     {
         // read from fd[0]
-        p = read(sockfd, &B[i*X], sizeof(char)*X);
-        if(p<0)
-        	break;
+        read(sockfd, &B[i*X], sizeof(char)*X);
     }
+
+    close(sockfd);
     
     // send signal
     kill(pid_prod, SIGUSR1);
