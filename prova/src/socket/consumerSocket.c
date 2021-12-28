@@ -6,10 +6,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <errno.h>
 #include <arpa/inet.h> 
 #include <sys/time.h> 
 #include <time.h> 
+
+#define MEGA 1048576
+#define X 1024
 
 int main(int argc, char *argv[])
 {
@@ -17,18 +21,7 @@ int main(int argc, char *argv[])
     int sockfd = 0, n = 0;
     struct sockaddr_in serv_addr;
 
-    // time variable to compute the duration of the execution
-    struct timeval end;
-    end.tv_sec = 0;
-    end.tv_usec = 0;
-    // variable to store the total duration of the process
-    double elapsed;
-    double begin;
-
-    // initialising a buffer
-    char buff[80];
-
-    if(argc != 3)
+    if(argc != 4)
     {
         printf("\n Usage: %s <ip of server> \n",argv[0]);
         return 1;
@@ -36,8 +29,26 @@ int main(int argc, char *argv[])
     
     // dimension taken from master: already casted to length for the array of integers
     int dim = atoi(argv[2]);
-    // initialising an array for the consumer process
-    char B[dim];
+    int number = dim * MEGA;
+    // number of kB
+    int y = dim*X;
+    // get pid producer process
+    pid_t pid_prod = atoi(argv[3]);
+    
+    printf("Get param\n");
+    fflush(stdout);
+
+    // intialising the array for the consumer process
+    char* B;
+    B = (char *) malloc(sizeof(char)*number);
+    if(B == NULL)
+        perror("Run out of memory\n");
+    printf("Created B\n");
+    fflush(stdout);
+       
+    // send signal
+    kill(pid_prod, SIGUSR2);
+    
 
     memset(B, '0',sizeof(B));
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -57,70 +68,31 @@ int main(int argc, char *argv[])
         return 1;
     } 
 
+    printf("Connecting\n");
+    fflush(stdout);
     if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
        printf("\n Error : Connect Failed \n");
        return 1;
     }
-
-    while(n = read(sockfd, B, sizeof(B)-1) > 0);
-
-    // getting the time
-    gettimeofday(&end,0);
-
-    // converting the time into micro seconds and storing it into a variable
-    double time_final = end.tv_sec*1000000 + end.tv_usec;
     
-    sleep(5);
-    
-    memset(buff, '0',sizeof(buff));
-    if((sockfd2 = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    } 
-
-    memset(&serv_addr2, '0', sizeof(serv_addr2)); 
-
-    serv_addr2.sin_family = AF_INET;
-    serv_addr2.sin_port = htons(5002); 
-
-    if(inet_pton(AF_INET, argv[1], &serv_addr2.sin_addr)<=0)
-    {
-        printf("\n inet_pton error occured\n");
-        return 1;
-    } 
-
-    if( connect(sockfd2, (struct sockaddr *)&serv_addr2, sizeof(serv_addr2)) < 0)
-    {
-       printf("\n Error : Connect Failed \n");
-       return 1;
-    }
-
-    // redaing from the socket
-    while(n2 = read(sockfd2, buff, sizeof(buff)-1) > 0);
-    // converting the time into a float number
-    begin = atof(buff);
-    
-    // computing the total time
-    elapsed = time_final - begin;
-    
-    printf("Time socket = %f us\n", elapsed);
+    // send signal
+    kill(pid_prod, SIGUSR2);
+    printf("Reading\n");
     fflush(stdout);
-
-    /*while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
+    
+    int p = 1;
+    for(int i=0; i<y;i++)
     {
-        B[n] = 0;
-        if(fputs(B, stdout) == EOF)
-        {
-            printf("\n Error : Fputs error\n");
-        }
-    }*/
-
-    if(n < 0)
-    {
-        printf("\n Read error \n");
-    } 
+        // read from fd[0]
+        p = read(sockfd, &B[i*X], sizeof(char)*X);
+        if(p<0)
+        	break;
+    }
+    
+    // send signal
+    kill(pid_prod, SIGUSR1);
+    free(B);
 
     return 0;
 }

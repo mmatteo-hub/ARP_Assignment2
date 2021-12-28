@@ -1,5 +1,2 @@
-konsole (PID = 15145) created at : Tue Dec 28 01:28:54 2021
-konsole (PID = 15189) created at : Tue Dec 28 01:29:08 2021
-konsole (PID = 15190) created at : Tue Dec 28 01:29:08 2021
-Process (PID = 15145) killed at : Tue Dec 28 01:29:15 2021
-Process (PID = 15189) killed at : Tue Dec 28 01:29:15 2021
+konsole (PID = 9719) created at : Tue Dec 28 09:30:52 2021
+konsole (PID = 9728) created at : Tue Dec 28 09:30:53 2021
