@@ -69,11 +69,17 @@ int main(int argc, char *argv[])
         A[i] = 'A' + (rand()%26);
     }
 
+    printf("Array created\n");
+    fflush(stdout);
+    
     // defininf the sockwt
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, '0', sizeof(serv_addr));
     memset(A, '0', sizeof(A)); 
-
+    
+    printf("Memset ok\n");
+    fflush(stdout);
+    
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(5000); 
@@ -82,13 +88,19 @@ int main(int argc, char *argv[])
 
     listen(listenfd, 10); 
 
+    printf("Listening\n");
+    fflush(stdout);
     while(1)
     {
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL); 
 
+	printf("Connected\n");
+	fflush(stdout);
 	while(!ready);
         // getting the time
         clock_gettime(CLOCK_REALTIME,&begin);
+        printf("Started\n");
+	fflush(stdout);
 
         // writing on the socket
         for(int i=0; i<y;i++)
@@ -99,6 +111,9 @@ int main(int argc, char *argv[])
         // closing the socket
         close(connfd);
         
+        printf("Sent\n");
+	fflush(stdout);
+	
         while(end.tv_sec == 0 && end.tv_nsec == 0);
     
         elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);

@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     char *arg_list_3[] = {"./../exe/producerSocket", strToPass, (char*)NULL};
     char *arg_list_4[] = {"./../exe/producerSharedmemory", strToPass, (char*)NULL};
 
-    char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, (char*)NULL};
+    
     char *arg_list_8[] = {"./../exe/consumerSharedmemory", strToPass, (char*)NULL};
 
     char str[80];
@@ -199,7 +199,12 @@ int main(int argc, char *argv[])
                     fprintf(f,"konsole (PID = %d) created at : %s", pid3, ctime(&clk));
                     fflush(f);
                     
+                    sleep(1);
+                    
                     // consumer
+                    char prod_pid3[10];
+                    sprintf(prod_pid3, "%d", pid3);
+                    char *arg_list_7[] = {"./../exe/consumerSocket", "127.0.0.1", strToPass, prod_pid3, (char*)NULL};
                     pid7= spawn("./../exe/consumerSocket", arg_list_7);
                     fseek(f,0,SEEK_END);
                     clk = time(NULL);
