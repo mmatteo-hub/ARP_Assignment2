@@ -19,9 +19,6 @@ int main(int argc, char * argv[])
     // initialising named pipe already created into the master process
     char * namedPipe = "/tmp/namedPipe";
 
-    printf("Inside consumer for Named Pipe\n\n");
-    fflush(stdout);
-
     // opening the pipe
     int fd = open(namedPipe,O_RDONLY);
 

@@ -1,11 +1,5 @@
-konsole (PID = 7715) created at : Tue Dec 28 01:08:29 2021
-konsole (PID = 7730) created at : Tue Dec 28 01:08:33 2021
-konsole (PID = 7731) created at : Tue Dec 28 01:08:33 2021
-konsole (PID = 7739) created at : Tue Dec 28 01:08:35 2021
-konsole (PID = 7746) created at : Tue Dec 28 01:08:37 2021
-konsole (PID = 7747) created at : Tue Dec 28 01:08:37 2021
-konsole (PID = 7754) created at : Tue Dec 28 01:08:39 2021
-konsole (PID = 7764) created at : Tue Dec 28 01:08:40 2021
-konsole (PID = 7765) created at : Tue Dec 28 01:08:40 2021
-Process (PID = 7754) killed at : Tue Dec 28 01:08:43 2021
-Process (PID = 7764) killed at : Tue Dec 28 01:08:43 2021
+konsole (PID = 15145) created at : Tue Dec 28 01:28:54 2021
+konsole (PID = 15189) created at : Tue Dec 28 01:29:08 2021
+konsole (PID = 15190) created at : Tue Dec 28 01:29:08 2021
+Process (PID = 15145) killed at : Tue Dec 28 01:29:15 2021
+Process (PID = 15189) killed at : Tue Dec 28 01:29:15 2021

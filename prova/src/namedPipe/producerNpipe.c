@@ -14,6 +14,10 @@
 #define MEGA 1048576
 #define X 1024
 
+// colours
+#define KNRM  "\x1B[0m"
+#define KGRN  "\x1B[32m"
+
 // time variable to compute the duration of the execution
 struct timespec begin,end;
 int ready = 0;
@@ -89,7 +93,7 @@ int main(int argc, char * argv[])
     
     elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
         
-    printf("Duration for transfering %d MB by named pipe: %lf ms\n", dim, elapsed/1000000);
+    printf("%s\nTransfered %d MB(s) by NAMED PIPE, time needed =  %lf ms%s\n\n", KGRN, dim, elapsed/1000000, KNRM);
     fflush(stdout);
 
     return 0;

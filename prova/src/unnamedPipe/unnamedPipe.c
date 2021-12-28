@@ -16,6 +16,10 @@
 #define MEGA 1048576
 #define X 1024
 
+//colours
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+
 int main(int argc, char * argv[])
 {
     // fork pid
@@ -46,8 +50,6 @@ int main(int argc, char * argv[])
     // child process: consumer
     if(!pid)
     {
-        printf("Unnamed Pipe started\n");
-        fflush(stdout);
         close(fd[1]);
         // initialising the array for the consumer process
         char* B;
@@ -101,7 +103,7 @@ int main(int argc, char * argv[])
         // converting the time into micro seconds and storing it into the variable
         elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
 
-        printf("Duration for transfering %d MB by unnamed pipe: %lf ms\n", dim, elapsed/1000000);
+        printf("%s\nTransfered %d MB(s) by UNNAMED PIPE, time needed =  %lf ms%s\n\n", KRED, dim, elapsed/1000000,KNRM);
         fflush(stdout);
     }
 

@@ -19,6 +19,16 @@
 
 #define CHECK(X) ({int __val = (X); (__val == -1 ? ({fprintf(stderr,"ERROR (" __FILE__ ":%d) -- %s\n",__LINE__,strerror(errno)); exit(-1);-1;}) : __val); })
 
+// colours
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+
 // defining pids for 5 processes
 int pid1, pid2, pid3, pid4, pid6, pid7, pid8;
 
@@ -105,21 +115,19 @@ int main(int argc, char *argv[])
     flag1 = 0;
     while(!flag1)
     {
-        printf("Enter number of MB to trasfer (maximum 100MB): ");
+        printf("%sEnter number of MB to trasfer (maximum 100MB): ", KNRM);
         fflush(stdout);
         scanf("%d",&dimension);
         if(dimension > 0 && dimension <= 100) flag1 = 1;
         else
         {
-            printf("Invalid dimension.\n");
+            printf("%sInvalid dimension.\n", KWHT);
             fflush(stdout);
         }
     }
     intToPass = dimension;
     char strToPass[10];
     sprintf(strToPass, "%f", intToPass);
-    printf("%d MB to pass\n", atoi(strToPass));
-    fflush(stdout);
 
     // defining all the paramters list for the processes
     char *arg_list_1[] = {"./../exe/unnamedPipe", strToPass, (char*)NULL};
@@ -133,7 +141,9 @@ int main(int argc, char *argv[])
 
     char str[80];
 
-    printf("Type:\n1 to transfer data via UNNAMED PIPE\n2 to transfer data via NAMED PIPE\n3 to transfer data via SOCKET\n4 to transfer data via SHARED MEMORY\n0 to QUIT\n");
+    printf("%s%d MB to pass", KNRM, atoi(strToPass));
+    fflush(stdout);
+    printf("\n%sType:\n%s1 to transfer data via UNNAMED PIPE\n%s2 to transfer data via NAMED PIPE\n%s3 to transfer data via SOCKET\n%s4 to transfer data via SHARED MEMORY\n%s0 to QUIT %s\n", KNRM, KRED, KGRN, KYEL, KCYN, KWHT, KNRM);
     fflush(stdout);
 
     while(1)
