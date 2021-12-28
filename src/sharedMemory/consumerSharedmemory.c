@@ -99,6 +99,11 @@ int main(int argc, char *argv[])
 		sem_post(NotFull);
     }
 
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"CONSUMER SHAED MEMORY: Read correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
+
     // getting the time
     clock_gettime(CLOCK_REALTIME,&end);
 

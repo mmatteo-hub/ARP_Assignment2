@@ -83,6 +83,11 @@ int main(int argc, char * argv[])
         // read from fd[0]
         read(fd, &B[i*X], sizeof(char)*X);
     }
+    
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"CONSUMER NAMED PIPE: Read correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
 
     // send signal
     check(kill(pid_prod, SIGUSR1));
