@@ -1,4 +1,4 @@
-# unzip src.zip file into the path inserted
+# unzip src.zip file into the path inserted by the user
 unzip -q -d $1/ src.zip
 
 # create 2 folder to organise the files
@@ -15,5 +15,5 @@ gcc $1/src/socket/producerSocket.c -o $1/exe/producerSocket
 gcc $1/src/socket/consumerSocket.c -o $1/exe/consumerSocket
 gcc $1/src/unnamedPipe/unnamedPipe.c -o $1/exe/unnamedPipe
 
-# printing on the shell
+# printing on the shell the success of the installation
 echo installation succeded

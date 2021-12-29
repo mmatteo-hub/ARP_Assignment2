@@ -1,4 +1,4 @@
-##### PASSING DATA BETWEEN PROCESSES #####
+################ PASSING DATA BETWEEN PROCESSES ################
 The program concerns passing data between two different processes and comparing the time needed to compute the action.
 
 Processes are called:
@@ -14,7 +14,7 @@ and they have to:
 
 The dimension of the buffer is chosen by the user at the beginning of the execution and it does not change till the program is executed again (so it can be chosen again).
 
-######## PROGRAM PREPARATION ########
+################ PROGRAM PREPARATION ################
 1 - type on a shell '$ ./install.sh <path name>' and press enter. The <path name> has to be the name of a folder (the folder will be created inside the actual folder, so do not give a gloabl path since the next step will not be done succesfully);
 
 1.1 - check that, once the install.sh has completed, a message will be shown on the shell;
