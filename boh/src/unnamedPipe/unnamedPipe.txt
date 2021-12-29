@@ -1,6 +1,0 @@
-########## UNNAMED PIPE ##########
-To transfer data via an unnamed pipe, only one process is performed, which forks. 
-The parent process will be the producer and the child process the consumer. 
-The producer initializes an array of chars of the size decided by the user. 
-In this case, dynamic memory allocation was used because arrays larger than 7 Mb were not statically allocated.
-The data is written and read on the pipe in 1kB packets.
