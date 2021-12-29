@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
         perror("Run out of memory\n");
 
     char buffer[256];
-    if (argc < 4) {
+    if (argc < 4)
+    {
        fprintf(stderr,"usage %s hostname port\n", argv[0]);
        exit(0);
     }
@@ -45,23 +46,20 @@ int main(int argc, char *argv[])
     if (sockfd < 0) 
         error("ERROR opening socket");
     server = gethostbyname(argv[1]);
-    if (server == NULL) {
+    if (server == NULL)
+    {
         fprintf(stderr,"ERROR, no such host\n");
         exit(0);
     }
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, 
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
+    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
     serv_addr.sin_port = htons(portno);
-    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) 
-        error("ERROR connecting");
+    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) error("ERROR connecting");
     bzero(buffer,256);
     sprintf(buffer, "%s", "Ready");
     n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) 
-         error("ERROR writing to socket");
+    if (n < 0) error("ERROR writing to socket");
     bzero(B, number);
     
     for(int i=0; i<y;i++)
@@ -70,14 +68,10 @@ int main(int argc, char *argv[])
         n = read(sockfd, &B[i*X], sizeof(char)*X);
     }
 
-    printf("Last 20 vals of B = %s\nDim(B)=%ld\n",&B[number-20],strlen(B));
-    fflush(stdout);
-    if (n < 0) 
-         error("ERROR reading from socket");
+    if (n < 0) error("ERROR reading from socket");
     sprintf(buffer, "%s", "Done");
     n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) 
-         error("ERROR writing to socket");
+    if (n < 0) error("ERROR writing to socket");
     close(sockfd);
     free(B);
     return 0;

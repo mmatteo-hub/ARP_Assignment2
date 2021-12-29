@@ -1,5 +1,3 @@
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument */
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h> 
@@ -9,8 +7,6 @@
 #include <strings.h>
 #include <unistd.h>
 #include <time.h>
-
-
 
 // colours
 #define KNRM  "\x1B[0m"
@@ -36,15 +32,16 @@ int main(int argc, char *argv[])
     end.tv_nsec = 0;
     // variable to store the total duration of the process, once converted
     double elapsed;
-     int sockfd, newsockfd, portno, clilen;
-     char buffer[256];
-     struct sockaddr_in serv_addr, cli_addr;
-     int n;
-     if (argc < 3) {
-         fprintf(stderr,"ERROR, no port provided\n");
-         exit(1);
-     }
-     // dimension taken from master
+	int sockfd, newsockfd, portno, clilen;
+	char buffer[256];
+	struct sockaddr_in serv_addr, cli_addr;
+	int n;
+	if (argc < 3)
+	{
+		fprintf(stderr,"ERROR, no port provided\n");
+		exit(1);
+	}
+    // dimension taken from master
     int dim = atoi(argv[1]);
     int number = dim * MEGA;
     // number kB
@@ -61,48 +58,50 @@ int main(int argc, char *argv[])
         // filling the array randomly
         A[i] = 'A' + (rand()%26);
     }
-
-    printf("Last 20 vals of A = %s\nDim(A)=%ld\n",&A[number-20],strlen(A));
-    fflush(stdout);
     
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) 
-        error("ERROR opening socket");
-     bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[2]);
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(portno);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
-     listen(sockfd,5);
-     clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
-     bzero(buffer,256);
-     n = read(newsockfd,buffer,255);
-     if (n < 0) error("ERROR reading from socket");
-     printf("%s\n", buffer);
-     // getting the time
-        clock_gettime(CLOCK_REALTIME,&begin);
-     // writing on the socket
-        for(int i=0; i<y;i++)
-        {
-            // write on the fd[1]
-            n = write(newsockfd, &A[i*X], sizeof(char)*X);
-        }
-     if (n < 0) error("ERROR writing to socket");
-     bzero(buffer,256);
-     n = read(newsockfd,buffer,255);
-     printf("%s\n", buffer);
-     if (n < 0) error("ERROR reading from socket");
-     // getting the time
-        clock_gettime(CLOCK_REALTIME,&end);
-        elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
-        printf("\n%sTransfered %d MB(s) by SOCKET, time needed =  %lf ms%s\n\n", KYEL, dim, elapsed/1000000, KNRM);
-        fflush(stdout);
-        close(newsockfd);
-     return 0; 
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0) error("ERROR opening socket");
+
+	bzero((char *) &serv_addr, sizeof(serv_addr));
+	portno = atoi(argv[2]);
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_port = htons(portno);
+	if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) error("ERROR on binding");
+
+	listen(sockfd,5);
+	clilen = sizeof(cli_addr);
+	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+	
+	if (newsockfd < 0) 
+		error("ERROR on accept");
+	
+	bzero(buffer,256);
+	
+	n = read(newsockfd,buffer,255);
+	if (n < 0) error("ERROR reading from socket");
+	
+	// getting the time
+	clock_gettime(CLOCK_REALTIME,&begin);
+	// writing on the socket
+	for(int i=0; i<y;i++)
+	{
+		// write on the fd[1]
+		n = write(newsockfd, &A[i*X], sizeof(char)*X);
+	}
+	if (n < 0) error("ERROR writing to socket");
+	bzero(buffer,256);
+	n = read(newsockfd,buffer,255);
+	
+	if (n < 0) error("ERROR reading from socket");
+	
+	// getting the time
+	clock_gettime(CLOCK_REALTIME,&end);
+	elapsed = (end.tv_sec*1000000000 + end.tv_nsec) - (begin.tv_sec*1000000000 + begin.tv_nsec);
+	printf("\n%sTransfered %d MB(s) by SOCKET, time needed =  %lf ms%s\n\n", KYEL, dim, elapsed/1000000, KNRM);
+	fflush(stdout);
+	
+	close(newsockfd);
+	
+	return 0; 
 }
