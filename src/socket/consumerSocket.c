@@ -134,6 +134,14 @@ int main(int argc, char *argv[])
         fprintf(f,"CONSUMER SOCKET: Error reading from socket at : %s", ctime(&clk));
         fflush(f);
 	}
+    else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Read correctly %d MB of memory at : %s",atoi(argv[2]), ctime(&clk));
+        fflush(f);
+    }
+
     sprintf(buffer, "%s", "Done");
     n = write(sockfd,buffer,strlen(buffer));
     if (n < 0)

@@ -103,6 +103,11 @@ int main(int argc, char * argv[])
             read(fd[0], &B[i*X], sizeof(char)*X);
         }
 
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER UNNAMED PIPE: Read correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+
         free(B);
         fseek(f,0,SEEK_END);
         clk = time(NULL);
@@ -143,13 +148,16 @@ int main(int argc, char * argv[])
         
         // taking the initial time
         clock_gettime(CLOCK_REALTIME,&begin);
-        int c = 0;
         for(int i=0; i<y;i++)
         {
             // write on the fd[1]
             write(fd[1], &A[i*X], sizeof(char)*X);
-            c++;
         }
+
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER UNNAMED PIPE: Written correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
 
         free(A);
         fseek(f,0,SEEK_END);

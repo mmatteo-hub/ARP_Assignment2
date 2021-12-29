@@ -157,6 +157,13 @@ int main(int argc, char *argv[])
         fprintf(f,"PRODUCER SOCKET: Error writing to socket at : %s", ctime(&clk));
         fflush(f);
 	}
+	else
+	{
+		fseek(f,0,SEEK_END);
+		clk = time(NULL);
+		fprintf(f,"PRODUCER SOCkET: Read correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+		fflush(f);
+	}
 	bzero(buffer,256);
 	n = read(newsockfd,buffer,255);
 	

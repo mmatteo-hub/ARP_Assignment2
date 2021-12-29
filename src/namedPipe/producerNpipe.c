@@ -49,7 +49,7 @@ void endtime(int sig_number)
         clock_gettime(CLOCK_REALTIME,&end);
         fseek(f,0,SEEK_END);
         clk = time(NULL);
-        fprintf(f,"PRODUCER NPIPE: Received signal SIGUSR1 at : %s", ctime(&clk));
+        fprintf(f,"PRODUCER NAMED PIPE: Received signal SIGUSR1 at : %s", ctime(&clk));
         fflush(f);
 	}
 }
@@ -60,7 +60,7 @@ void consumer_ready(int sig_number)
 		ready = 1;
         fseek(f,0,SEEK_END);
         clk = time(NULL);
-        fprintf(f,"PRODUCER NPIPE: Received signal SIGUSR2 at : %s", ctime(&clk));
+        fprintf(f,"PRODUCER NAMED PIPE: Received signal SIGUSR2 at : %s", ctime(&clk));
         fflush(f);
 	}
 }
@@ -128,6 +128,12 @@ int main(int argc, char * argv[])
         // write on the fd[1]
         write(fd, &A[i*X], sizeof(char)*X);
     }
+
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"PRODUCER NAMED PIPE: Written correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
+
     free(A);
     fseek(f,0,SEEK_END);
     clk = time(NULL);

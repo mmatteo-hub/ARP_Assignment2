@@ -100,6 +100,11 @@ int main(int argc, char *argv[])
 		sem_post(Mutex);
 		sem_post(NotEmpty);
 	}
+
+	fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"PRODUCER NAMED PIPE: Written correctly %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
   
 	shm_unlink(SHMOBJ_PATH);
 	sem_close(NotFull);
