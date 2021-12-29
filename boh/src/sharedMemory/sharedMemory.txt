@@ -1,1 +1,9 @@
 ########## SHARED MEMORY ##########
+In this case, two processes are running, a producer and a consumer, which communicate through a circular buffer in shared memory.
+The producer initializes an array of chars of the size decided by the user. 
+Dynamic memory allocation was used because arrays larger than 7 Mb were not statically allocated.
+Then both the processes do the mapping 4kB of shared memory.
+It is used as a circular buffer where the producer writes and in a concurrent way the consumer reads.
+These actions are coordinated by 3 semaphores (mutex).
+There is also another semaphore that blocks the producer until teh consumer is ready to receive data.
+In this way the consumers knows when the producer starts and can evaluated the time passed trasferring data.

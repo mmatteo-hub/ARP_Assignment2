@@ -11,6 +11,4 @@ The data can be trasferred by:
 3- socket
 4- shared memory
 
-The master process takes care of creating and destroying the named pipe,
-randomly chooses a port between 5000 and 5099 for the socket 
-and gives all processes the size received from the user.
+The master process takes care of creating and destroying the named pipe, randomly chooses a port between 5000 and 5099 for the socket and gives all processes the size received from the user.

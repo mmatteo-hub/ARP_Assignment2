@@ -3,3 +3,5 @@ In this case, two processes are running, a producer and a consumer, which commun
 The producer initializes an array of chars of the size decided by the user. 
 In this case, dynamic memory allocation was used because arrays larger than 7 Mb were not statically allocated.
 The data is written and read on the pipe in 1kB packets.
+The consumer notify that it's ready to read and it has finished to read with signals.
+The producer pid is provided to the consumer by the master process as parameter.
