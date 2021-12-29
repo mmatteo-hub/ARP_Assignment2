@@ -1,0 +1,16 @@
+########## MASTER ##########
+This process has the purpose of:
+- receiving as input from the user the size of data to be transferred
+- checking that it is a value between 1 and 100
+- running the processes relating to the mode chosen for data transfer
+- before quit, kills all the processes
+
+The data can be trasferred by:
+1- unnamed pipe
+2- named pipe
+3- socket
+4- shared memory
+
+The master process takes care of creating and destroying the named pipe,
+randomly chooses a port between 5000 and 5099 for the socket 
+and gives all processes the size received from the user.
