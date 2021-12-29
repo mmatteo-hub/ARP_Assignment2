@@ -1,0 +1,5 @@
+########## NAMED PIPE ##########
+In this case, two processes are running, a producer and a consumer, which communicate through a named pipe created by the master process.
+The producer initializes an array of chars of the size decided by the user. 
+In this case, dynamic memory allocation was used because arrays larger than 7 Mb were not statically allocated.
+The data is written and read on the pipe in 1kB packets.
