@@ -19,6 +19,19 @@
 FILE *f;
 time_t clk;
 
+// function to detect an error and write it into the log file
+int check (int retval)
+{
+    if(retval == -1)
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"ERROR("__FILE__") -- %s at %s",strerror(errno), ctime(&clk));
+        exit(-1);
+    }
+    return retval;
+}
+
 int main(int argc, char * argv[])
 {
     // initialising named pipe already created into the master process
@@ -58,7 +71,7 @@ int main(int argc, char * argv[])
     }
        
     // send signal
-    kill(pid_prod, SIGUSR2);
+    check(kill(pid_prod, SIGUSR2));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"CONSUMER NAMED PIPE: Sent signal SIGUSR2 to the producer (PID = %d) at : %s", pid_prod, ctime(&clk));
@@ -72,7 +85,7 @@ int main(int argc, char * argv[])
     }
 
     // send signal
-    kill(pid_prod, SIGUSR1);
+    check(kill(pid_prod, SIGUSR1));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"CONSUMER NAMED PIPE: Sent signal SIGUSR1 to the producer (PID = %d) at : %s", pid_prod, ctime(&clk));

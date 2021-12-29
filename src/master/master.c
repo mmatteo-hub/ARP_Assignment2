@@ -18,8 +18,6 @@
 
 #define USEC 1000
 
-#define CHECK(X) ({int __val = (X); (__val == -1 ? ({fprintf(stderr,"ERROR (" __FILE__ ":%d) -- %s\n",__LINE__,strerror(errno)); exit(-1);-1;}) : __val); })
-
 // colours
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -37,46 +35,59 @@ int pid1, pid2, pid3, pid4, pid6, pid7, pid8;
 FILE *f;
 time_t clk;
 
+// function to detect an error and write it into the log file
+int check (int retval)
+{
+    if(retval == -1)
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"ERROR("__FILE__") -- %s at %s",strerror(errno), ctime(&clk));
+        exit(-1);
+    }
+    return retval;
+}
+
 // function to kill al processes and respective write on the log file all actions computed
 void kill_processes()
 {
-    CHECK(kill(pid1,SIGKILL));
+    check(kill(pid1,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid1, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid2,SIGKILL));
+    check(kill(pid2,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid2, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid3,SIGKILL));
+    check(kill(pid3,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid3, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid4,SIGKILL));
+    check(kill(pid4,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid4, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid6,SIGKILL));
+    check(kill(pid6,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid6, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid7,SIGKILL));
+    check(kill(pid7,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid7, ctime(&clk));
     fflush(f);
 
-    CHECK(kill(pid8,SIGKILL));
+    check(kill(pid8,SIGKILL));
     fseek(f,0,SEEK_END);
     clk = time(NULL);
     fprintf(f,"MASTER: Process (PID = %d) killed at : %s", pid8, ctime(&clk));
@@ -91,7 +102,7 @@ int spawn(const char * program, char ** arg_list)
         return child_pid;
     else 
     {
-        execvp (program, arg_list);
+        check(execvp (program, arg_list));
         perror("exec failed");
         fseek(f,0,SEEK_END);
         clk = time(NULL);

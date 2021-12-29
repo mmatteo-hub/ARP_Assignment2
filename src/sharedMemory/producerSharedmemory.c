@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h> 
 #include <sys/select.h>
+#include <errno.h>
 
 #define SHMOBJ_PATH "/shm_AOS"
 #define SEM_PATH_1 "/sem_AOS_1"
@@ -22,6 +23,20 @@
 // defining file pointer and a time variable to read the current date
 FILE *f;
 time_t clk;
+
+// function to detect an error and write it into the log file
+int check (int retval)
+{
+    if(retval == -1)
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"ERROR("__FILE__") -- %s at %s",strerror(errno), ctime(&clk));
+        exit(-1);
+    }
+    return retval;
+}
+
 
 char * ptr;
 int i, j;

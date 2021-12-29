@@ -25,6 +25,19 @@
 FILE *f;
 time_t clk;
 
+// function to detect an error and write it into the log file
+int check (int retval)
+{
+    if(retval == -1)
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"ERROR("__FILE__") -- %s at %s",strerror(errno), ctime(&clk));
+        exit(-1);
+    }
+    return retval;
+}
+
 int main(int argc, char * argv[])
 {
     // fork pid
@@ -60,7 +73,7 @@ int main(int argc, char * argv[])
     int y = dim*X;
 
     // fork
-    pid = fork();
+    pid = check(fork());
     // child process: consumer
     if(!pid)
     {
