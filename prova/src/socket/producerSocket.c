@@ -7,6 +7,7 @@
 #include <strings.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/select.h>
 
 // colours
 #define KNRM  "\x1B[0m"
@@ -14,6 +15,10 @@
 
 #define MEGA 1048576
 #define X 1024
+
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
 
 void error(char *msg)
 {
@@ -36,9 +41,17 @@ int main(int argc, char *argv[])
 	char buffer[256];
 	struct sockaddr_in serv_addr, cli_addr;
 	int n;
+
+	// opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
+
 	if (argc < 3)
 	{
 		fprintf(stderr,"ERROR, no port provided\n");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: No port provided at : %s", ctime(&clk));
+        fflush(f);
 		exit(1);
 	}
     // dimension taken from master
@@ -51,7 +64,20 @@ int main(int argc, char *argv[])
     char* A;
     A = (char *) malloc(sizeof(char)*number);
     if(A == NULL)
-        perror("Run out of memory\n");
+	{
+		perror("Run out of memory\n");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+	}
+	else
+	{
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+	}
 
     for(int i=0; i<number;i++)
     {
@@ -60,7 +86,14 @@ int main(int argc, char *argv[])
     }
     
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd < 0) error("ERROR opening socket");
+	if (sockfd < 0)
+	{
+		error("ERROR opening socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Error opening the socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	portno = atoi(argv[2]);
@@ -73,13 +106,26 @@ int main(int argc, char *argv[])
 	clilen = sizeof(cli_addr);
 	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 	
-	if (newsockfd < 0) 
+	if (newsockfd < 0)
+	{
 		error("ERROR on accept");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Error on accept at : %s", ctime(&clk));
+        fflush(f);
+	}
 	
 	bzero(buffer,256);
 	
 	n = read(newsockfd,buffer,255);
-	if (n < 0) error("ERROR reading from socket");
+	if (n < 0)
+	{
+		error("ERROR reading from socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Error reading from socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 	
 	// getting the time
 	clock_gettime(CLOCK_REALTIME,&begin);
@@ -89,11 +135,25 @@ int main(int argc, char *argv[])
 		// write on the fd[1]
 		n = write(newsockfd, &A[i*X], sizeof(char)*X);
 	}
-	if (n < 0) error("ERROR writing to socket");
+	if (n < 0)
+	{
+		error("ERROR writing to socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Error writing to socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 	bzero(buffer,256);
 	n = read(newsockfd,buffer,255);
 	
-	if (n < 0) error("ERROR reading from socket");
+	if (n < 0)
+	{
+		error("ERROR reading from socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER SOCKET: Error reading from socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 	
 	// getting the time
 	clock_gettime(CLOCK_REALTIME,&end);

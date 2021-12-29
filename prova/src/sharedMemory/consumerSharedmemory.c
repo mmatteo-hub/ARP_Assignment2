@@ -9,6 +9,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
+#include <sys/select.h>
+
 #define SHMOBJ_PATH "/shm_AOS"
 #define SEM_PATH_1 "/sem_AOS_1"
 #define SEM_PATH_2 "/sem_AOS_2"
@@ -22,15 +24,35 @@
 #define MEGA 1048576
 #define X 1024
 
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
+
 int main(int argc, char *argv[])
 {
+  	// opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
+
     int dim = atoi(argv[1]);
     int dim_buff = dim*4*X;
     int number = dim*MEGA;
     char* B;
     B = (char *) malloc(sizeof(char)*number);
     if(B == NULL)
+	{
     	perror("Run out of memory\n");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SHARED MEM0RY: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+	}
+	else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SHARED MEM0RY: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+    }
 
     int shared_seg_size = (dim_buff);
     char *ptr;

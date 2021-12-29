@@ -7,9 +7,15 @@
 #include <strings.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h> 
+#include <sys/select.h>
 
 #define MEGA 1048576
 #define X 1024
+
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
 
 void error(char *msg)
 {
@@ -23,6 +29,9 @@ int main(int argc, char *argv[])
 
     struct sockaddr_in serv_addr;
     struct hostent *server;
+
+    // opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
     
     int dim = atoi(argv[2]);
     int number = dim * MEGA;
@@ -33,22 +42,49 @@ int main(int argc, char *argv[])
     char* B;
     B = (char *) malloc(sizeof(char)*number);
     if(B == NULL)
-        perror("Run out of memory\n");
+    {
+    	perror("Run out of memory\n");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+	}
+    else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Allocated %d MB of memory at : %s",atoi(argv[2]), ctime(&clk));
+        fflush(f);
+    }
 
     char buffer[256];
     if (argc < 4)
     {
-       fprintf(stderr,"usage %s hostname port\n", argv[0]);
-       exit(0);
+       	fprintf(stderr,"usage %s hostname port\n", argv[0]);
+       	fseek(f,0,SEEK_END);
+    	clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Usage %s hostname port at : %s", argv[0], ctime(&clk));
+        fflush(f);
+       	exit(0);
     }
     portno = atoi(argv[3]);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) 
+    if (sockfd < 0)
+    {
         error("ERROR opening socket");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error opening the socket at : %s", ctime(&clk));
+        fflush(f);
+    }
     server = gethostbyname(argv[1]);
     if (server == NULL)
     {
         fprintf(stderr,"ERROR, no such host\n");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: No host found at : %s", ctime(&clk));
+        fflush(f);
         exit(0);
     }
     bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -59,7 +95,15 @@ int main(int argc, char *argv[])
     bzero(buffer,256);
     sprintf(buffer, "%s", "Ready");
     n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) error("ERROR writing to socket");
+    if (n < 0)
+	{
+		error("ERROR writing to socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error writing to socket at : %s", ctime(&clk));
+        fflush(f);
+	}
+
     bzero(B, number);
     
     for(int i=0; i<y;i++)
@@ -68,11 +112,27 @@ int main(int argc, char *argv[])
         n = read(sockfd, &B[i*X], sizeof(char)*X);
     }
 
-    if (n < 0) error("ERROR reading from socket");
+    if (n < 0)
+	{
+		error("ERROR reading from socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error reading from socket at : %s", ctime(&clk));
+        fflush(f);
+	}
     sprintf(buffer, "%s", "Done");
     n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) error("ERROR writing to socket");
+    if (n < 0)
+	{
+		error("ERROR writing to socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error writing to socket at : %s", ctime(&clk));
+        fflush(f);
+	}
+
     close(sockfd);
     free(B);
+	
     return 0;
 }

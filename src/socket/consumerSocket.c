@@ -1,128 +1,138 @@
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netdb.h>
 #include <stdio.h>
-#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h> 
 #include <stdlib.h>
+#include <strings.h>
+#include <string.h>
 #include <unistd.h>
-#include <errno.h>
-#include <arpa/inet.h> 
-#include <sys/time.h> 
 #include <time.h> 
+#include <sys/select.h>
+
+#define MEGA 1048576
+#define X 1024
+
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
+
+void error(char *msg)
+{
+    perror(msg);
+    exit(0);
+}
 
 int main(int argc, char *argv[])
 {
-    // 
-    int sockfd = 0, n = 0;
+    int sockfd, portno, n;
+
     struct sockaddr_in serv_addr;
-    int sockfd2 = 0, n2 = 0;
-    struct sockaddr_in serv_addr2;
+    struct hostent *server;
 
-    // time variable to compute the duration of the execution
-    struct timeval end;
-    end.tv_sec = 0;
-    end.tv_usec = 0;
-    // variable to store the total duration of the process
-    double elapsed;
-    double begin;
-
-    // initialising a buffer
-    char buff[80];
-
-    if(argc != 3)
-    {
-        printf("\n Usage: %s <ip of server> \n",argv[0]);
-        return 1;
-    }
+    // opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
     
-    // dimension taken from master: already casted to length for the array of integers
     int dim = atoi(argv[2]);
-    // initialising an array for the consumer process
-    char B[dim];
-
-    memset(B, '0',sizeof(B));
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    int number = dim * MEGA;
+    // number of kB
+    int y = dim*X;
+    
+    // intialising the array for the consumer process
+    char* B;
+    B = (char *) malloc(sizeof(char)*number);
+    if(B == NULL)
     {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    } 
+    	perror("Run out of memory\n");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+	}
+    else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Allocated %d MB of memory at : %s",atoi(argv[2]), ctime(&clk));
+        fflush(f);
+    }
 
-    memset(&serv_addr, '0', sizeof(serv_addr)); 
-
+    char buffer[256];
+    if (argc < 4)
+    {
+       	fprintf(stderr,"usage %s hostname port\n", argv[0]);
+       	fseek(f,0,SEEK_END);
+    	clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Usage %s hostname port at : %s", argv[0], ctime(&clk));
+        fflush(f);
+       	exit(0);
+    }
+    portno = atoi(argv[3]);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0)
+    {
+        error("ERROR opening socket");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error opening the socket at : %s", ctime(&clk));
+        fflush(f);
+    }
+    server = gethostbyname(argv[1]);
+    if (server == NULL)
+    {
+        fprintf(stderr,"ERROR, no such host\n");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: No host found at : %s", ctime(&clk));
+        fflush(f);
+        exit(0);
+    }
+    bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(5000); 
+    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
+    serv_addr.sin_port = htons(portno);
+    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) error("ERROR connecting");
+    bzero(buffer,256);
+    sprintf(buffer, "%s", "Ready");
+    n = write(sockfd,buffer,strlen(buffer));
+    if (n < 0)
+	{
+		error("ERROR writing to socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error writing to socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 
-    if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    bzero(B, number);
+    
+    for(int i=0; i<y;i++)
     {
-        printf("\n inet_pton error occured\n");
-        return 1;
-    } 
-
-    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-       printf("\n Error : Connect Failed \n");
-       return 1;
+        // read from fd[0]
+        n = read(sockfd, &B[i*X], sizeof(char)*X);
     }
 
-    while(n = read(sockfd, B, sizeof(B)-1) > 0);
+    if (n < 0)
+	{
+		error("ERROR reading from socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error reading from socket at : %s", ctime(&clk));
+        fflush(f);
+	}
+    sprintf(buffer, "%s", "Done");
+    n = write(sockfd,buffer,strlen(buffer));
+    if (n < 0)
+	{
+		error("ERROR writing to socket");
+		fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER SOCKET: Error writing to socket at : %s", ctime(&clk));
+        fflush(f);
+	}
 
-    // getting the time
-    gettimeofday(&end,0);
-
-    // converting the time into micro seconds and storing it into a variable
-    double time_final = end.tv_sec*1000000 + end.tv_usec;
-    
-    sleep(5);
-    
-    memset(buff, '0',sizeof(buff));
-    if((sockfd2 = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    } 
-
-    memset(&serv_addr2, '0', sizeof(serv_addr2)); 
-
-    serv_addr2.sin_family = AF_INET;
-    serv_addr2.sin_port = htons(5002); 
-
-    if(inet_pton(AF_INET, argv[1], &serv_addr2.sin_addr)<=0)
-    {
-        printf("\n inet_pton error occured\n");
-        return 1;
-    } 
-
-    if( connect(sockfd2, (struct sockaddr *)&serv_addr2, sizeof(serv_addr2)) < 0)
-    {
-       printf("\n Error : Connect Failed \n");
-       return 1;
-    }
-
-    // redaing from the socket
-    while(n2 = read(sockfd2, buff, sizeof(buff)-1) > 0);
-    // converting the time into a float number
-    begin = atof(buff);
-    
-    // computing the total time
-    elapsed = time_final - begin;
-    
-    printf("Time socket = %f us\n", elapsed);
-    fflush(stdout);
-
-    /*while ( (n = read(sockfd, B, sizeof(B)-1)) > 0)
-    {
-        B[n] = 0;
-        if(fputs(B, stdout) == EOF)
-        {
-            printf("\n Error : Fputs error\n");
-        }
-    }*/
-
-    if(n < 0)
-    {
-        printf("\n Read error \n");
-    } 
-
+    close(sockfd);
+    free(B);
+	
     return 0;
 }

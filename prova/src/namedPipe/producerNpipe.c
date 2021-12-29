@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <math.h>
 #include <sys/time.h>
+#include <sys/select.h>
 
 #define MEGA 1048576
 #define X 1024
@@ -22,12 +23,20 @@
 struct timespec begin,end;
 int ready = 0;
 
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
+
 void endtime(int sig_number)
 {
 	if(sig_number == SIGUSR1)
 	{
 		// getting the time
         clock_gettime(CLOCK_REALTIME,&end);
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER NPIPE: Received signal SIGUSR1 at : %s", ctime(&clk));
+        fflush(f);
 	}
 }
 void consumer_ready(int sig_number)
@@ -35,6 +44,10 @@ void consumer_ready(int sig_number)
 	if(sig_number == SIGUSR2)
 	{
 		ready = 1;
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER NPIPE: Received signal SIGUSR2 at : %s", ctime(&clk));
+        fflush(f);
 	}
 }
 
@@ -42,6 +55,9 @@ int main(int argc, char * argv[])
 {   
     // initialising named pipe already created into the master process
     char * namedPipe = "/tmp/namedPipe";
+
+    // opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
 
     // initialising the variable for the time to the zero in order to avoid having rubbish data
     begin.tv_sec = 0;
@@ -67,7 +83,20 @@ int main(int argc, char * argv[])
     char* A;
     A = (char *) malloc(sizeof(char)*number);
     if(A == NULL)
+    {
         perror("Run out of memory\n");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER NAMED PIPE: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+    }
+    else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER NAMED PIPE: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+    }
 
     for(int i=0; i<number;i++)
     {
@@ -86,6 +115,11 @@ int main(int argc, char * argv[])
         write(fd, &A[i*X], sizeof(char)*X);
     }
     free(A);
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"PRODUCER NAMED PIPE: Released %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
+
     // closing the pipe
     close(fd);
     

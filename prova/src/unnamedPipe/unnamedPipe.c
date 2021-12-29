@@ -12,6 +12,7 @@
 #include <math.h>
 #include <malloc.h>
 #include <sys/time.h>
+#include <sys/select.h>
 
 #define MEGA 1048576
 #define X 1024
@@ -20,10 +21,17 @@
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
+
 int main(int argc, char * argv[])
 {
     // fork pid
-    pid_t pid;  
+    pid_t pid; 
+
+    // opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
 
     // time variable to compute the duration of the execution
     struct timespec begin,end;
@@ -38,7 +46,13 @@ int main(int argc, char * argv[])
     // file descriptor for pipe
     int fd[2];
     if(pipe(fd)<0)
+    {
         perror("Not created pipe");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"UNNAMED PIPE: Pipe not created at : %s", ctime(&clk));
+        fflush(f);
+    }
     // dimension taken from master: already casted to length for the array of integers
     int dim = atoi(argv[1]);
     int number = dim * MEGA;
@@ -55,14 +69,33 @@ int main(int argc, char * argv[])
         char* B;
         B = (char *) malloc(sizeof(char)*number);
         if(B == NULL)
+        {
             perror("Run out of memory\n");
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"CONSUMER UNNAMED PIPE: Run out of memory at : %s", ctime(&clk));
+            fflush(f);
+        }
+        else
+        {
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"CONSUMER UNNAMED PIPE: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+            fflush(f);
+        }
         
         for(int i=0; i<y;i++)
         {
             // read from fd[0]
             read(fd[0], &B[i*X], sizeof(char)*X);
         }
+
         free(B);
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER UNNAMED PIPE: Released %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+
         close(fd[0]);
         exit(0);
     }
@@ -74,7 +107,21 @@ int main(int argc, char * argv[])
         close(fd[0]);
         A = (char *) malloc(sizeof(char)*number);
         if(A == NULL)
+        {
             perror("Run out of memory\n");
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"PRODUCER UNNAMED PIPE: Run out of memory at : %s", ctime(&clk));
+            fflush(f);
+        }
+        else
+        {
+            fseek(f,0,SEEK_END);
+            clk = time(NULL);
+            fprintf(f,"PRODUCER UNNAMED PIPE: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+            fflush(f);
+        }
+
         for(int i=0; i<number;i++)
         {
             // filling the array randomly
@@ -90,7 +137,13 @@ int main(int argc, char * argv[])
             write(fd[1], &A[i*X], sizeof(char)*X);
             c++;
         }
+
         free(A);
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"PRODUCER UNNAMED PIPE: Released %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+
         close(fd[1]);
         wait(NULL);
         // taking the final time

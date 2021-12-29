@@ -10,17 +10,22 @@
 #include <errno.h>
 #include <math.h>
 #include <sys/time.h>
+#include <sys/select.h>
 
 #define MEGA 1048576
 #define X 1024
+
+// defining file pointer and a time variable to read the current date
+FILE *f;
+time_t clk;
 
 int main(int argc, char * argv[])
 {
     // initialising named pipe already created into the master process
     char * namedPipe = "/tmp/namedPipe";
 
-    printf("Inside consumer for Named Pipe\n\n");
-    fflush(stdout);
+    // opening the log file in append mode to write on it
+    f = fopen("./../log/logfile.txt","a");
 
     // opening the pipe
     int fd = open(namedPipe,O_RDONLY);
@@ -37,10 +42,27 @@ int main(int argc, char * argv[])
     char* B;
     B = (char *) malloc(sizeof(char)*number);
     if(B == NULL)
+    {
         perror("Run out of memory\n");
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER NAMED PIPE: Run out of memory at : %s", ctime(&clk));
+        fflush(f);
+    }
+    else
+    {
+        fseek(f,0,SEEK_END);
+        clk = time(NULL);
+        fprintf(f,"CONSUMER NAMED PIPE: Allocated %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+        fflush(f);
+    }
        
     // send signal
     kill(pid_prod, SIGUSR2);
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"CONSUMER NAMED PIPE: Sent signal SIGUSR2 to the producer (PID = %d) at : %s", pid_prod, ctime(&clk));
+    fflush(f);
 
     // reading from the pipe
     for(int i=0; i<y;i++)
@@ -51,7 +73,17 @@ int main(int argc, char * argv[])
 
     // send signal
     kill(pid_prod, SIGUSR1);
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"CONSUMER NAMED PIPE: Sent signal SIGUSR1 to the producer (PID = %d) at : %s", pid_prod, ctime(&clk));
+    fflush(f);
+
     free(B);
+    fseek(f,0,SEEK_END);
+    clk = time(NULL);
+    fprintf(f,"CONSUMER NAMED PIPE: Released %d MB of memory at : %s",atoi(argv[1]), ctime(&clk));
+    fflush(f);
+
     // closing the pipe
     close(fd);
     
